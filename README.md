@@ -83,8 +83,8 @@ For imported HTML projects:
 
 The current Projects page highlights:
 
-- interactive mathematics visualizers in `projects/project-placeholder/math visualizer/`;
-- university presentations in `projects/project-placeholder/university projects/`;
+- interactive mathematics visualizers in `projects/math-visualizers/`;
+- university presentations in `projects/university-projects/`;
 - visual artefacts from the university project folder.
 
 For the university logo:
