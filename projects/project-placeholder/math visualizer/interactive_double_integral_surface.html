@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Double Integral Surface Explorer</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f3eb;
+      --card: #ffffff;
+      --ink: #17202a;
+      --muted: #62707f;
+      --teal: #419d8b;
+      --blue: #3d7ea8;
+      --spark: #e95924;
+      --line: #e4ddd0;
+      --soft: #eef7f5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #e9f7f4, var(--bg) 40%, #fff 100%);
+      color: var(--ink);
+    }
+
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(26px, 4vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 850px;
+    }
+
+    .formula-pill {
+      background: var(--ink);
+      color: white;
+      padding: 16px 18px;
+      border-radius: 22px;
+      box-shadow: 0 12px 30px rgba(23,32,42,0.16);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 18px;
+    }
+
+    .panel, .plot-card, .explain-card {
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: 0 16px 40px rgba(61,126,168,0.12);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel {
+      padding: 18px;
+      height: fit-content;
+      position: sticky;
+      top: 18px;
+    }
+
+    .plot-card {
+      padding: 12px;
+      min-height: 660px;
+    }
+
+    #plot {
+      width: 100%;
+      height: 650px;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin: 4px 0 12px;
+    }
+
+    .control {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--soft);
+      color: var(--teal);
+      border: 1px solid #d4eee8;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .result {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      background: linear-gradient(135deg, #ffffff, #eef7f5);
+      border: 1px solid #dcefea;
+      border-radius: 20px;
+      padding: 14px;
+    }
+
+    .metric .name {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+    }
+
+    .metric .number {
+      font-size: 26px;
+      font-weight: 900;
+      margin-top: 4px;
+      letter-spacing: -0.03em;
+    }
+
+    .metric.main {
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      color: white;
+      border: none;
+    }
+
+    .metric.main .name { color: rgba(255,255,255,0.78); }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 12px 0 0;
+    }
+
+    .explain-card {
+      margin-top: 18px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .explain-card h3 {
+      margin: 0 0 8px;
+      color: var(--teal);
+    }
+
+    .explain-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: #fff7f2;
+      border: 1px solid #f5d4c4;
+      color: var(--spark);
+      border-radius: 8px;
+      padding: 1px 6px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      background: var(--spark);
+      color: white;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(233,89,36,0.25);
+    }
+
+    @media (max-width: 980px) {
+      header, .layout, .explain-card {
+        grid-template-columns: 1fr;
+      }
+      .panel { position: static; }
+      .formula-pill { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Interactive Double Integral Explorer</h1>
+        <p class="subtitle">
+          Choose a surface, move the rectangle on the xy-plane, and watch how the double integral approximates the volume under the surface.
+        </p>
+      </div>
+      <div class="formula-pill">∫∫<sub>R</sub> f(x,y) dA ≈ Σ f(xᵢ,yⱼ) ΔA</div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel">
+        <div class="section-title">Function</div>
+        <div class="control">
+          <label for="functionSelect">Surface z = f(x,y)</label>
+          <select id="functionSelect">
+            <option value="paraboloid">Paraboloid: z = 10 − x² − y²</option>
+            <option value="waves">Waves: z = 3 + sin(x) cos(y)</option>
+            <option value="plane">Plane: z = 2 + 0.7x + 0.4y</option>
+            <option value="gaussian">Gaussian Hill: z = 8e^(-(x²+y²)/6)</option>
+            <option value="saddle">Saddle: z = x² − y²</option>
+            <option value="custom">Custom expression</option>
+          </select>
+          <p class="hint">Custom supports: <span class="kbd">x</span>, <span class="kbd">y</span>, <span class="kbd">sin</span>, <span class="kbd">cos</span>, <span class="kbd">tan</span>, <span class="kbd">sqrt</span>, <span class="kbd">exp</span>, <span class="kbd">log</span>, <span class="kbd">abs</span>, powers with <span class="kbd">^</span>.</p>
+        </div>
+
+        <div class="control" id="customWrap" style="display:none;">
+          <label for="customExpr">Custom formula</label>
+          <input id="customExpr" type="text" value="4 + sin(x*y)" />
+        </div>
+
+        <div class="section-title">Region R = [a,b] × [c,d]</div>
+        <div class="grid-2">
+          <div class="control">
+            <label for="xMin">a <span class="value" id="xMinVal"></span></label>
+            <input type="range" id="xMin" min="-5" max="5" step="0.1" value="-2" />
+          </div>
+          <div class="control">
+            <label for="xMax">b <span class="value" id="xMaxVal"></span></label>
+            <input type="range" id="xMax" min="-5" max="5" step="0.1" value="2" />
+          </div>
+          <div class="control">
+            <label for="yMin">c <span class="value" id="yMinVal"></span></label>
+            <input type="range" id="yMin" min="-5" max="5" step="0.1" value="-2" />
+          </div>
+          <div class="control">
+            <label for="yMax">d <span class="value" id="yMaxVal"></span></label>
+            <input type="range" id="yMax" min="-5" max="5" step="0.1" value="2" />
+          </div>
+        </div>
+
+        <div class="control">
+          <label for="resolution">Approximation quality <span class="value" id="resolutionVal"></span></label>
+          <input type="range" id="resolution" min="10" max="80" step="5" value="35" />
+          <p class="hint">Higher quality means more small rectangles, so the approximation becomes closer to the real integral.</p>
+        </div>
+
+        <button id="centerBtn">Center region around origin</button>
+
+        <div class="result">
+          <div class="metric main">
+            <div class="name">Approximate double integral</div>
+            <div class="number" id="integralValue">0</div>
+          </div>
+          <div class="metric">
+            <div class="name">Base area ΔR</div>
+            <div class="number" id="baseArea">0</div>
+          </div>
+          <div class="metric">
+            <div class="name">Average height over R</div>
+            <div class="number" id="avgHeight">0</div>
+          </div>
+        </div>
+      </aside>
+
+      <section>
+        <div class="plot-card">
+          <div id="plot"></div>
+        </div>
+        <div class="explain-card">
+          <div>
+            <h3>1. The base</h3>
+            <p>The rectangle on the xy-plane is the region R. Its area is <strong>(b − a)(d − c)</strong>.</p>
+          </div>
+          <div>
+            <h3>2. The height</h3>
+            <p>At every point of R, the function gives a height <strong>z = f(x,y)</strong>.</p>
+          </div>
+          <div>
+            <h3>3. The integral</h3>
+            <p>The program adds many tiny columns: <strong>height × tiny area</strong>. This approximates the volume under the surface.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const els = {
+      functionSelect: document.getElementById('functionSelect'),
+      customWrap: document.getElementById('customWrap'),
+      customExpr: document.getElementById('customExpr'),
+      xMin: document.getElementById('xMin'),
+      xMax: document.getElementById('xMax'),
+      yMin: document.getElementById('yMin'),
+      yMax: document.getElementById('yMax'),
+      resolution: document.getElementById('resolution'),
+      centerBtn: document.getElementById('centerBtn'),
+      integralValue: document.getElementById('integralValue'),
+      baseArea: document.getElementById('baseArea'),
+      avgHeight: document.getElementById('avgHeight'),
+      xMinVal: document.getElementById('xMinVal'),
+      xMaxVal: document.getElementById('xMaxVal'),
+      yMinVal: document.getElementById('yMinVal'),
+      yMaxVal: document.getElementById('yMaxVal'),
+      resolutionVal: document.getElementById('resolutionVal')
+    };
+
+    function safeCustomFunction(expr) {
+      const cleaned = expr
+        .replace(/\^/g, '**')
+        .replace(/\bsin\b/g, 'Math.sin')
+        .replace(/\bcos\b/g, 'Math.cos')
+        .replace(/\btan\b/g, 'Math.tan')
+        .replace(/\bsqrt\b/g, 'Math.sqrt')
+        .replace(/\bexp\b/g, 'Math.exp')
+        .replace(/\blog\b/g, 'Math.log')
+        .replace(/\babs\b/g, 'Math.abs')
+        .replace(/\bpi\b/g, 'Math.PI')
+        .replace(/\be\b/g, 'Math.E');
+
+      return new Function('x', 'y', `
+        const value = ${cleaned};
+        if (!Number.isFinite(value)) return NaN;
+        return value;
+      `);
+    }
+
+    function getFunction() {
+      const type = els.functionSelect.value;
+      if (type === 'paraboloid') return (x, y) => 10 - x*x - y*y;
+      if (type === 'waves') return (x, y) => 3 + Math.sin(x) * Math.cos(y);
+      if (type === 'plane') return (x, y) => 2 + 0.7*x + 0.4*y;
+      if (type === 'gaussian') return (x, y) => 8 * Math.exp(-(x*x + y*y) / 6);
+      if (type === 'saddle') return (x, y) => x*x - y*y;
+      try {
+        return safeCustomFunction(els.customExpr.value);
+      } catch {
+        return () => NaN;
+      }
+    }
+
+    function linspace(min, max, n) {
+      const arr = [];
+      const step = (max - min) / (n - 1);
+      for (let i = 0; i < n; i++) arr.push(min + i * step);
+      return arr;
+    }
+
+    function clampRegion() {
+      let xMin = parseFloat(els.xMin.value);
+      let xMax = parseFloat(els.xMax.value);
+      let yMin = parseFloat(els.yMin.value);
+      let yMax = parseFloat(els.yMax.value);
+
+      if (xMin >= xMax) {
+        if (document.activeElement === els.xMin) xMax = Math.min(5, xMin + 0.1);
+        else xMin = Math.max(-5, xMax - 0.1);
+      }
+      if (yMin >= yMax) {
+        if (document.activeElement === els.yMin) yMax = Math.min(5, yMin + 0.1);
+        else yMin = Math.max(-5, yMax - 0.1);
+      }
+
+      els.xMin.value = xMin.toFixed(1);
+      els.xMax.value = xMax.toFixed(1);
+      els.yMin.value = yMin.toFixed(1);
+      els.yMax.value = yMax.toFixed(1);
+      return { xMin, xMax, yMin, yMax };
+    }
+
+    function calculateIntegral(f, region, n) {
+      const { xMin, xMax, yMin, yMax } = region;
+      const dx = (xMax - xMin) / n;
+      const dy = (yMax - yMin) / n;
+      let sum = 0;
+      let validCount = 0;
+
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          const x = xMin + (i + 0.5) * dx;
+          const y = yMin + (j + 0.5) * dy;
+          const z = f(x, y);
+          if (Number.isFinite(z)) {
+            sum += z * dx * dy;
+            validCount++;
+          }
+        }
+      }
+
+      const area = Math.abs((xMax - xMin) * (yMax - yMin));
+      const avg = area > 0 ? sum / area : 0;
+      return { integral: sum, area, avg, validCount };
+    }
+
+    function createSurfaceTrace(f) {
+      const gridN = 70;
+      const xs = linspace(-5, 5, gridN);
+      const ys = linspace(-5, 5, gridN);
+      const z = ys.map(y => xs.map(x => {
+        const value = f(x, y);
+        return Number.isFinite(value) ? Math.max(-12, Math.min(14, value)) : null;
+      }));
+
+      return {
+        type: 'surface',
+        x: xs,
+        y: ys,
+        z,
+        colorscale: 'Viridis',
+        opacity: 0.82,
+        showscale: false,
+        name: 'Surface z = f(x,y)',
+        hovertemplate: 'x=%{x:.2f}<br>y=%{y:.2f}<br>z=%{z:.2f}<extra></extra>'
+      };
+    }
+
+    function createRegionTopTrace(f, region) {
+      const n = 28;
+      const xs = linspace(region.xMin, region.xMax, n);
+      const ys = linspace(region.yMin, region.yMax, n);
+      const z = ys.map(y => xs.map(x => {
+        const value = f(x, y);
+        return Number.isFinite(value) ? value : null;
+      }));
+
+      return {
+        type: 'surface',
+        x: xs,
+        y: ys,
+        z,
+        colorscale: [[0, '#e95924'], [1, '#f7b267']],
+        opacity: 0.95,
+        showscale: false,
+        name: 'Selected surface patch',
+        hovertemplate: 'Selected R<br>x=%{x:.2f}<br>y=%{y:.2f}<br>z=%{z:.2f}<extra></extra>'
+      };
+    }
+
+    function createBaseTrace(region) {
+      const x = [region.xMin, region.xMax, region.xMax, region.xMin, region.xMin];
+      const y = [region.yMin, region.yMin, region.yMax, region.yMax, region.yMin];
+      const z = [0, 0, 0, 0, 0];
+      return {
+        type: 'scatter3d',
+        mode: 'lines',
+        x, y, z,
+        line: { color: '#e95924', width: 8 },
+        name: 'Base region R'
+      };
+    }
+
+    function createColumnTraces(f, region) {
+      const columns = [];
+      const nx = 7;
+      const ny = 7;
+      const xs = linspace(region.xMin, region.xMax, nx);
+      const ys = linspace(region.yMin, region.yMax, ny);
+      for (const x of xs) {
+        for (const y of ys) {
+          const z = f(x, y);
+          if (!Number.isFinite(z)) continue;
+          columns.push({
+            type: 'scatter3d',
+            mode: 'lines',
+            x: [x, x],
+            y: [y, y],
+            z: [0, z],
+            line: { color: '#17202a', width: 2 },
+            opacity: 0.45,
+            showlegend: false,
+            hoverinfo: 'skip'
+          });
+        }
+      }
+      return columns;
+    }
+
+    function updateLabels(region, resolution) {
+      els.xMinVal.textContent = region.xMin.toFixed(1);
+      els.xMaxVal.textContent = region.xMax.toFixed(1);
+      els.yMinVal.textContent = region.yMin.toFixed(1);
+      els.yMaxVal.textContent = region.yMax.toFixed(1);
+      els.resolutionVal.textContent = `${resolution}×${resolution}`;
+    }
+
+    function update() {
+      els.customWrap.style.display = els.functionSelect.value === 'custom' ? 'block' : 'none';
+
+      const f = getFunction();
+      const region = clampRegion();
+      const resolution = parseInt(els.resolution.value, 10);
+      updateLabels(region, resolution);
+
+      const result = calculateIntegral(f, region, resolution);
+      els.integralValue.textContent = result.integral.toFixed(4);
+      els.baseArea.textContent = result.area.toFixed(4);
+      els.avgHeight.textContent = result.avg.toFixed(4);
+
+      const data = [
+        createSurfaceTrace(f),
+        createRegionTopTrace(f, region),
+        createBaseTrace(region),
+        ...createColumnTraces(f, region)
+      ];
+
+      const layout = {
+        margin: { l: 0, r: 0, t: 20, b: 0 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        scene: {
+          xaxis: { title: 'x', range: [-5, 5], gridcolor: '#e4ddd0', zerolinecolor: '#17202a' },
+          yaxis: { title: 'y', range: [-5, 5], gridcolor: '#e4ddd0', zerolinecolor: '#17202a' },
+          zaxis: { title: 'z = f(x,y)', range: [-12, 14], gridcolor: '#e4ddd0', zerolinecolor: '#17202a' },
+          camera: { eye: { x: 1.55, y: 1.45, z: 1.15 } },
+          aspectratio: { x: 1, y: 1, z: 0.75 }
+        },
+        showlegend: true,
+        legend: {
+          x: 0.02,
+          y: 0.98,
+          bgcolor: 'rgba(255,255,255,0.78)',
+          bordercolor: '#e4ddd0',
+          borderwidth: 1
+        }
+      };
+
+      Plotly.react('plot', data, layout, { responsive: true, displaylogo: false });
+    }
+
+    Object.values(els).forEach(el => {
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
+        el.addEventListener('input', update);
+        el.addEventListener('change', update);
+      }
+    });
+
+    els.centerBtn.addEventListener('click', () => {
+      const width = parseFloat(els.xMax.value) - parseFloat(els.xMin.value);
+      const height = parseFloat(els.yMax.value) - parseFloat(els.yMin.value);
+      els.xMin.value = (-width / 2).toFixed(1);
+      els.xMax.value = (width / 2).toFixed(1);
+      els.yMin.value = (-height / 2).toFixed(1);
+      els.yMax.value = (height / 2).toFixed(1);
+      update();
+    });
+
+    update();
+  </script>
+</body>
+</html>

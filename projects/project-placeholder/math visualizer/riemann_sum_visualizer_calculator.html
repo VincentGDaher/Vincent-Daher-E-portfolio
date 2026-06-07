@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riemann Sum Visualizer & Calculator</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.0/math.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+  <style>
+    :root {
+      --bg: #f7f3eb;
+      --card: rgba(255,255,255,0.92);
+      --ink: #17202a;
+      --muted: #65717d;
+      --teal: #419d8b;
+      --blue: #3d7ea8;
+      --spark: #e95924;
+      --line: #e4ddd0;
+      --soft: #eef7f5;
+      --violet: #7d4e9e;
+      --green-soft: #e7f8f3;
+      --orange-soft: #fff3ec;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #e7f8f3, var(--bg) 45%, #fff 100%);
+    }
+
+    .app {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 50px);
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .formula-pill {
+      background: var(--ink);
+      color: white;
+      padding: 16px 18px;
+      border-radius: 22px;
+      box-shadow: 0 12px 30px rgba(23,32,42,0.15);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 18px;
+    }
+
+    .panel, .plot-card, .explain-card, .table-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: 0 16px 40px rgba(61,126,168,0.12);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel {
+      padding: 18px;
+      height: fit-content;
+      position: sticky;
+      top: 18px;
+    }
+
+    .plot-card {
+      padding: 12px;
+      min-height: 650px;
+    }
+
+    #plot {
+      width: 100%;
+      height: 630px;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin: 4px 0 12px;
+    }
+
+    .control {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+    }
+
+    input[type="range"] {
+      padding: 0;
+      accent-color: var(--teal);
+    }
+
+    .value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--soft);
+      color: var(--teal);
+      border: 1px solid #d4eee8;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 10px 0 0;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: #fff7f2;
+      border: 1px solid #f5d4c4;
+      color: var(--spark);
+      border-radius: 8px;
+      padding: 1px 6px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      background: var(--spark);
+      color: white;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(233,89,36,0.25);
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .method-btn {
+      background: white;
+      color: var(--ink);
+      box-shadow: none;
+      border: 1px solid var(--line);
+      margin: 0;
+      padding: 10px;
+      border-radius: 14px;
+    }
+
+    .method-btn.active {
+      background: var(--teal);
+      color: white;
+      border-color: var(--teal);
+    }
+
+    .results { display: grid; gap: 10px; margin-top: 14px; }
+
+    .metric {
+      background: linear-gradient(135deg, #ffffff, #eef7f5);
+      border: 1px solid #dcefea;
+      border-radius: 20px;
+      padding: 14px;
+    }
+
+    .metric.main {
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      color: white;
+      border: none;
+    }
+
+    .metric.orange {
+      background: linear-gradient(135deg, #fff, var(--orange-soft));
+      border-color: #f5d4c4;
+    }
+
+    .metric.violet {
+      background: linear-gradient(135deg, #fff, #f4ecf8);
+      border-color: #ead9f2;
+    }
+
+    .metric .name {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 900;
+    }
+
+    .metric.main .name { color: rgba(255,255,255,0.78); }
+
+    .metric .number {
+      font-size: 24px;
+      font-weight: 950;
+      margin-top: 4px;
+      letter-spacing: -0.03em;
+      word-break: break-word;
+    }
+
+    .metric .small {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 5px;
+      word-break: break-word;
+    }
+
+    .explain-card {
+      margin-top: 18px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .explain-card h3 { margin: 0 0 8px; color: var(--teal); }
+    .explain-card p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    .table-card {
+      margin-top: 18px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--blue);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td.num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .error {
+      background: #fff2f0;
+      border: 1px solid #ffd0c7;
+      color: #9c2b14;
+      padding: 10px 12px;
+      border-radius: 14px;
+      margin-top: 10px;
+      display: none;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 1100px) {
+      header, .layout, .explain-card { grid-template-columns: 1fr; }
+      .panel { position: static; }
+      .formula-pill { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Riemann Sum Visualizer & Calculator</h1>
+        <p class="subtitle">
+          Build the definite integral from rectangles. Choose a function, interval, method, and number of subdivisions. The app compares the approximation with a high-accuracy integral and shows the error.
+        </p>
+      </div>
+      <div class="formula-pill">
+        Δx = (b−a)/n<br>
+        ∫<sub>a</sub><sup>b</sup> f(x) dx ≈ Σ f(xᵢ*)Δx
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel">
+        <div class="section-title">Function</div>
+        <div class="control">
+          <label for="preset">Choose example</label>
+          <select id="preset">
+            <option value="x^2">f(x) = x²</option>
+            <option value="x^3 - 3*x + 1">f(x) = x³ − 3x + 1</option>
+            <option value="sin(x)">f(x) = sin(x)</option>
+            <option value="cos(x)">f(x) = cos(x)</option>
+            <option value="exp(-x^2)">f(x) = e^(-x²)</option>
+            <option value="1/x">f(x) = 1/x</option>
+            <option value="sqrt(x)">f(x) = √x</option>
+            <option value="abs(x)">f(x) = |x|</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="expr">f(x)</label>
+          <input id="expr" type="text" value="x^2" />
+          <p class="hint">
+            Use <span class="kbd">x</span>, <span class="kbd">^</span>, <span class="kbd">sin</span>, <span class="kbd">cos</span>, <span class="kbd">sqrt</span>, <span class="kbd">exp</span>, <span class="kbd">log</span>, <span class="kbd">abs</span>, <span class="kbd">pi</span>.
+          </p>
+          <div class="error" id="errorBox"></div>
+        </div>
+
+        <div class="section-title">Interval and subdivisions</div>
+        <div class="grid-2">
+          <div class="control">
+            <label for="a">a <span class="value" id="aVal"></span></label>
+            <input type="range" id="a" min="-10" max="10" step="0.1" value="0" />
+          </div>
+          <div class="control">
+            <label for="b">b <span class="value" id="bVal"></span></label>
+            <input type="range" id="b" min="-10" max="10" step="0.1" value="3" />
+          </div>
+        </div>
+
+        <div class="control">
+          <label for="n">Number of rectangles n <span class="value" id="nVal"></span></label>
+          <input type="range" id="n" min="1" max="120" step="1" value="8" />
+          <p class="hint">Increase n to see the Riemann sum approach the integral.</p>
+        </div>
+
+        <div class="section-title">Method</div>
+        <div class="control">
+          <div class="method-grid">
+            <button class="method-btn active" data-method="left">Left</button>
+            <button class="method-btn" data-method="right">Right</button>
+            <button class="method-btn" data-method="midpoint">Midpoint</button>
+            <button class="method-btn" data-method="trapezoid">Trapezoid</button>
+            <button class="method-btn" data-method="simpson">Simpson</button>
+            <button class="method-btn" data-method="all">Compare all</button>
+          </div>
+          <p class="hint" id="methodHint">Left sum uses the left endpoint of each subinterval.</p>
+        </div>
+
+        <div class="section-title">View</div>
+        <div class="grid-2">
+          <div class="control">
+            <label for="xViewMin">View min <span class="value" id="xViewMinVal"></span></label>
+            <input type="range" id="xViewMin" min="-20" max="0" step="0.5" value="-2" />
+          </div>
+          <div class="control">
+            <label for="xViewMax">View max <span class="value" id="xViewMaxVal"></span></label>
+            <input type="range" id="xViewMax" min="0" max="20" step="0.5" value="5" />
+          </div>
+        </div>
+        <button id="focusBtn">Focus view on [a,b]</button>
+
+        <div class="results">
+          <div class="metric main">
+            <div class="name">Selected approximation</div>
+            <div class="number" id="approxValue">0</div>
+          </div>
+          <div class="metric">
+            <div class="name">Reference integral</div>
+            <div class="number" id="trueValue">0</div>
+          </div>
+          <div class="metric orange">
+            <div class="name">Absolute error</div>
+            <div class="number" id="errorValue">0</div>
+          </div>
+          <div class="metric violet">
+            <div class="name">Riemann sum formula</div>
+            <div class="small" id="formulaText"></div>
+          </div>
+        </div>
+      </aside>
+
+      <section>
+        <div class="plot-card">
+          <div id="plot"></div>
+        </div>
+
+        <div class="table-card">
+          <div class="section-title">Method comparison</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Formula idea</th>
+                <th>Approximation</th>
+                <th>Error</th>
+              </tr>
+            </thead>
+            <tbody id="comparisonBody"></tbody>
+          </table>
+        </div>
+
+        <div class="explain-card">
+          <div>
+            <h3>1. Cut</h3>
+            <p>The interval is divided into <strong>n</strong> equal parts. Each part has width <strong>Δx</strong>.</p>
+          </div>
+          <div>
+            <h3>2. Choose height</h3>
+            <p>Left, right, or midpoint methods choose a different height in each subinterval.</p>
+          </div>
+          <div>
+            <h3>3. Add rectangles</h3>
+            <p>Each rectangle contributes <strong>height × width</strong>. The sum approximates area.</p>
+          </div>
+          <div>
+            <h3>4. Take the limit</h3>
+            <p>As <strong>n → ∞</strong>, the rectangles become thinner and the sum approaches the integral.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let method = 'left';
+
+    const els = {
+      preset: document.getElementById('preset'), expr: document.getElementById('expr'),
+      a: document.getElementById('a'), b: document.getElementById('b'), n: document.getElementById('n'),
+      xViewMin: document.getElementById('xViewMin'), xViewMax: document.getElementById('xViewMax'),
+      focusBtn: document.getElementById('focusBtn'), errorBox: document.getElementById('errorBox'),
+      aVal: document.getElementById('aVal'), bVal: document.getElementById('bVal'), nVal: document.getElementById('nVal'),
+      xViewMinVal: document.getElementById('xViewMinVal'), xViewMaxVal: document.getElementById('xViewMaxVal'),
+      approxValue: document.getElementById('approxValue'), trueValue: document.getElementById('trueValue'),
+      errorValue: document.getElementById('errorValue'), formulaText: document.getElementById('formulaText'),
+      comparisonBody: document.getElementById('comparisonBody'), methodHint: document.getElementById('methodHint')
+    };
+
+    const methodLabels = {
+      left: 'Left sum', right: 'Right sum', midpoint: 'Midpoint sum', trapezoid: 'Trapezoidal rule', simpson: 'Simpson rule', all: 'Compare all'
+    };
+
+    const methodIdeas = {
+      left: 'xᵢ* = left endpoint',
+      right: 'xᵢ* = right endpoint',
+      midpoint: 'xᵢ* = middle point',
+      trapezoid: 'average of two endpoint heights',
+      simpson: 'parabolic approximation',
+      all: 'all methods together'
+    };
+
+    const methodHints = {
+      left: 'Left sum uses the left endpoint of each subinterval.',
+      right: 'Right sum uses the right endpoint of each subinterval.',
+      midpoint: 'Midpoint sum uses the middle of each subinterval. It is often more accurate than left/right sums.',
+      trapezoid: 'The trapezoidal rule connects endpoint heights with a straight line instead of a rectangle top.',
+      simpson: 'Simpson’s rule uses parabolas. If n is odd, the app internally uses n+1 subintervals.',
+      all: 'Compare all methods using the same function and interval.'
+    };
+
+    function normalizeExpression(input) {
+      return input.replace(/π/g, 'pi').replace(/√/g, 'sqrt').replace(/−/g, '-').replace(/÷/g, '/').replace(/×/g, '*');
+    }
+
+    function compileFunction(expr) {
+      const node = math.parse(normalizeExpression(expr));
+      const code = node.compile();
+      return x => {
+        const y = code.evaluate({ x, pi: Math.PI, e: Math.E });
+        return Number.isFinite(y) ? y : NaN;
+      };
+    }
+
+    function format(x) {
+      if (!Number.isFinite(x)) return 'undefined';
+      if (Math.abs(x) < 1e-10) return '0';
+      if (Math.abs(x) > 1e6 || Math.abs(x) < 1e-5) return x.toExponential(4);
+      return x.toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+    }
+
+    function linspace(a, b, n) {
+      const arr = [];
+      const h = (b-a)/(n-1);
+      for (let i=0; i<n; i++) arr.push(a+i*h);
+      return arr;
+    }
+
+    function clampInterval() {
+      let a = parseFloat(els.a.value);
+      let b = parseFloat(els.b.value);
+      if (a === b) {
+        if (document.activeElement === els.a) b = Math.min(10, a + 0.1);
+        else a = Math.max(-10, b - 0.1);
+      }
+      els.a.value = a.toFixed(1);
+      els.b.value = b.toFixed(1);
+      return { a, b };
+    }
+
+    function clampView() {
+      let min = parseFloat(els.xViewMin.value);
+      let max = parseFloat(els.xViewMax.value);
+      if (min >= max) { min = -2; max = 5; }
+      return { min, max };
+    }
+
+    function integrateReference(f, a, b) {
+      if (a === b) return 0;
+      const sign = a < b ? 1 : -1;
+      const left = Math.min(a,b), right = Math.max(a,b);
+      let n = 4000;
+      if (n % 2) n++;
+      const h = (right-left)/n;
+      let sum = f(left) + f(right);
+      if (!Number.isFinite(sum)) return NaN;
+      for (let i=1; i<n; i++) {
+        const y = f(left + i*h);
+        if (!Number.isFinite(y)) return NaN;
+        sum += (i % 2 === 0 ? 2 : 4) * y;
+      }
+      return sign * (h/3) * sum;
+    }
+
+    function riemann(f, a, b, n, m) {
+      if (a === b) return 0;
+      const dx = (b-a)/n;
+      let sum = 0;
+      for (let i=0; i<n; i++) {
+        let x;
+        if (m === 'left') x = a + i*dx;
+        else if (m === 'right') x = a + (i+1)*dx;
+        else x = a + (i+0.5)*dx;
+        const y = f(x);
+        if (!Number.isFinite(y)) return NaN;
+        sum += y * dx;
+      }
+      return sum;
+    }
+
+    function trapezoid(f, a, b, n) {
+      if (a === b) return 0;
+      const dx = (b-a)/n;
+      let sum = 0.5 * (f(a) + f(b));
+      if (!Number.isFinite(sum)) return NaN;
+      for (let i=1; i<n; i++) {
+        const y = f(a + i*dx);
+        if (!Number.isFinite(y)) return NaN;
+        sum += y;
+      }
+      return sum * dx;
+    }
+
+    function simpson(f, a, b, n) {
+      if (a === b) return 0;
+      if (n % 2 === 1) n++;
+      const dx = (b-a)/n;
+      let sum = f(a) + f(b);
+      if (!Number.isFinite(sum)) return NaN;
+      for (let i=1; i<n; i++) {
+        const y = f(a + i*dx);
+        if (!Number.isFinite(y)) return NaN;
+        sum += (i % 2 === 0 ? 2 : 4) * y;
+      }
+      return (dx/3) * sum;
+    }
+
+    function computeMethod(f, a, b, n, m) {
+      if (m === 'left' || m === 'right' || m === 'midpoint') return riemann(f,a,b,n,m);
+      if (m === 'trapezoid') return trapezoid(f,a,b,n);
+      if (m === 'simpson') return simpson(f,a,b,n);
+      return riemann(f,a,b,n,'left');
+    }
+
+    function rectangleTrace(f, a, b, n, m) {
+      const x = [], y = [];
+      const dx = (b-a)/n;
+      for (let i=0; i<n; i++) {
+        const x0 = a + i*dx;
+        const x1 = x0 + dx;
+        const sample = m === 'left' ? x0 : m === 'right' ? x1 : x0 + dx/2;
+        const h = f(sample);
+        if (!Number.isFinite(h)) continue;
+        x.push(x0, x0, x1, x1, x0, null);
+        y.push(0, h, h, 0, 0, null);
+      }
+      return {
+        type: 'scatter', mode: 'lines', x, y,
+        fill: 'toself',
+        fillcolor: 'rgba(233,89,36,0.18)',
+        line: { color: 'rgba(233,89,36,0.85)', width: 1.5 },
+        name: methodLabels[m] || 'Riemann rectangles',
+        hoverinfo: 'skip'
+      };
+    }
+
+    function trapezoidTrace(f, a, b, n) {
+      const x = [], y = [];
+      const dx = (b-a)/n;
+      for (let i=0; i<n; i++) {
+        const x0 = a + i*dx;
+        const x1 = x0 + dx;
+        const y0 = f(x0), y1 = f(x1);
+        if (!Number.isFinite(y0) || !Number.isFinite(y1)) continue;
+        x.push(x0, x0, x1, x1, x0, null);
+        y.push(0, y0, y1, 0, 0, null);
+      }
+      return {
+        type: 'scatter', mode: 'lines', x, y,
+        fill: 'toself',
+        fillcolor: 'rgba(65,157,139,0.2)',
+        line: { color: 'rgba(65,157,139,0.9)', width: 1.5 },
+        name: 'Trapezoids',
+        hoverinfo: 'skip'
+      };
+    }
+
+    function shadedTrueAreaTrace(f, a, b) {
+      const xs = linspace(a,b,600);
+      const topX = [], topY = [], bottomX = [], bottomY = [];
+      xs.forEach(xx => {
+        const yy = f(xx);
+        if (Number.isFinite(yy)) {
+          topX.push(xx); topY.push(yy);
+          bottomX.unshift(xx); bottomY.unshift(0);
+        }
+      });
+      return {
+        type: 'scatter', mode: 'lines',
+        x: [...topX, ...bottomX], y: [...topY, ...bottomY],
+        fill: 'toself',
+        fillcolor: 'rgba(61,126,168,0.14)',
+        line: { color: 'rgba(61,126,168,0.1)', width: 1 },
+        name: 'True signed area',
+        hoverinfo: 'skip'
+      };
+    }
+
+    function formulaFor(m, a, b, n) {
+      const dx = (b-a)/n;
+      if (m === 'left') return `Δx = ${format(dx)},  Σ f(a + iΔx)Δx, i = 0,...,n−1`;
+      if (m === 'right') return `Δx = ${format(dx)},  Σ f(a + iΔx)Δx, i = 1,...,n`;
+      if (m === 'midpoint') return `Δx = ${format(dx)},  Σ f(a + (i+1/2)Δx)Δx`;
+      if (m === 'trapezoid') return `Δx = ${format(dx)},  (Δx/2)[f(a)+2Σf(xᵢ)+f(b)]`;
+      if (m === 'simpson') return `Δx = ${format(dx)},  (Δx/3)[f(a)+4Σodd+2Σeven+f(b)]`;
+      return 'Compare all approximations in the table.';
+    }
+
+    function updateTable(f, a, b, n, reference) {
+      const methods = ['left','right','midpoint','trapezoid','simpson'];
+      els.comparisonBody.innerHTML = '';
+      methods.forEach(m => {
+        const approx = computeMethod(f,a,b,n,m);
+        const err = Math.abs(approx-reference);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${methodLabels[m]}</strong></td>
+          <td>${methodIdeas[m]}</td>
+          <td class="num">${format(approx)}</td>
+          <td class="num">${format(err)}</td>
+        `;
+        els.comparisonBody.appendChild(row);
+      });
+    }
+
+    function update() {
+      try {
+        els.errorBox.style.display = 'none';
+        const f = compileFunction(els.expr.value);
+        const {a,b} = clampInterval();
+        const view = clampView();
+        const n = parseInt(els.n.value, 10);
+
+        els.aVal.textContent = format(a);
+        els.bVal.textContent = format(b);
+        els.nVal.textContent = n;
+        els.xViewMinVal.textContent = format(view.min);
+        els.xViewMaxVal.textContent = format(view.max);
+        els.methodHint.textContent = methodHints[method];
+
+        const reference = integrateReference(f,a,b);
+        const selectedMethod = method === 'all' ? 'midpoint' : method;
+        const approximation = computeMethod(f,a,b,n,selectedMethod);
+        const error = Math.abs(approximation-reference);
+
+        els.approxValue.textContent = method === 'all' ? 'see table' : format(approximation);
+        els.trueValue.textContent = format(reference);
+        els.errorValue.textContent = method === 'all' ? 'see table' : format(error);
+        els.formulaText.textContent = formulaFor(method,a,b,n);
+        updateTable(f,a,b,n,reference);
+
+        const xs = linspace(view.min, view.max, 900);
+        const ys = xs.map(x => {
+          const y = f(x);
+          if (!Number.isFinite(y) || Math.abs(y) > 1e5) return null;
+          return y;
+        });
+        const finiteYs = ys.filter(Number.isFinite);
+        let yMin = -5, yMax = 5;
+        if (finiteYs.length) {
+          const rawMin = Math.min(...finiteYs,0), rawMax = Math.max(...finiteYs,0);
+          const pad = Math.max(1, 0.15*(rawMax-rawMin || 1));
+          yMin = Math.max(-80, rawMin-pad); yMax = Math.min(80, rawMax+pad);
+        }
+
+        const curve = {
+          type: 'scatter', mode: 'lines', x: xs, y: ys,
+          line: { color: '#3d7ea8', width: 4 },
+          name: 'f(x)',
+          hovertemplate: 'x=%{x:.3f}<br>f(x)=%{y:.3f}<extra></extra>'
+        };
+        const xAxis = { type:'scatter', mode:'lines', x:[view.min,view.max], y:[0,0], line:{color:'#17202a',width:1}, showlegend:false, hoverinfo:'skip' };
+        const aLine = { type:'scatter', mode:'lines', x:[a,a], y:[yMin,yMax], line:{color:'#419d8b',width:2,dash:'dash'}, name:'x = a', hoverinfo:'skip' };
+        const bLine = { type:'scatter', mode:'lines', x:[b,b], y:[yMin,yMax], line:{color:'#e95924',width:2,dash:'dash'}, name:'x = b', hoverinfo:'skip' };
+
+        let data = [shadedTrueAreaTrace(f,a,b)];
+        if (method === 'trapezoid') data.push(trapezoidTrace(f,a,b,n));
+        else if (method === 'simpson') data.push(trapezoidTrace(f,a,b,Math.max(2, Math.min(n, 30))));
+        else if (method === 'all') {
+          data.push(rectangleTrace(f,a,b,n,'midpoint'));
+          data.push(trapezoidTrace(f,a,b,n));
+        } else data.push(rectangleTrace(f,a,b,n,method));
+        data.push(curve, aLine, bLine, xAxis);
+
+        const layout = {
+          margin: { l: 52, r: 20, t: 36, b: 52 },
+          paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(255,255,255,0.35)',
+          xaxis: { title: 'x', range:[view.min,view.max], gridcolor:'#e4ddd0', zeroline:false },
+          yaxis: { title: 'y = f(x)', range:[yMin,yMax], gridcolor:'#e4ddd0', zeroline:false },
+          showlegend: true,
+          legend: { x:0.02, y:0.98, bgcolor:'rgba(255,255,255,0.78)', bordercolor:'#e4ddd0', borderwidth:1 },
+          annotations: [{
+            x:0.5, y:1.08, xref:'paper', yref:'paper', showarrow:false,
+            text: `${methodLabels[method]} with n = ${n}: ${method === 'all' ? 'compare below' : format(approximation)}`,
+            font:{size:15,color:'#17202a'}
+          }]
+        };
+        Plotly.react('plot', data, layout, { responsive:true, displaylogo:false });
+      } catch (err) {
+        els.errorBox.textContent = 'The function could not be read or computed. Try syntax like x^2, sin(x), exp(-x^2), sqrt(x), or 1/x.';
+        els.errorBox.style.display = 'block';
+      }
+    }
+
+    document.querySelectorAll('.method-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        method = btn.dataset.method;
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        update();
+      });
+    });
+
+    els.preset.addEventListener('change', () => {
+      if (els.preset.value !== 'custom') els.expr.value = els.preset.value;
+      update();
+    });
+
+    els.expr.addEventListener('input', () => {
+      els.preset.value = 'custom';
+      update();
+    });
+
+    [els.a, els.b, els.n, els.xViewMin, els.xViewMax].forEach(el => {
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
+    });
+
+    els.focusBtn.addEventListener('click', () => {
+      const a = parseFloat(els.a.value), b = parseFloat(els.b.value);
+      const left = Math.min(a,b), right = Math.max(a,b);
+      const pad = Math.max(1, 0.2*(right-left || 1));
+      els.xViewMin.value = Math.max(-20, left-pad);
+      els.xViewMax.value = Math.min(20, right+pad);
+      update();
+    });
+
+    update();
+  </script>
+</body>
+</html>

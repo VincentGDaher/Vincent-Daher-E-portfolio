@@ -81,6 +81,12 @@ For imported HTML projects:
 2. Place the project files there.
 3. Link to the project from `projects.html`.
 
+The current Projects page highlights:
+
+- interactive mathematics visualizers in `projects/project-placeholder/math visualizer/`;
+- university presentations in `projects/project-placeholder/university projects/`;
+- visual artefacts from the university project folder.
+
 For the university logo:
 
 1. Save the real logo image in `assets/images/`.

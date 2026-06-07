@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Non-Euclidean Geometry Visualizer</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f3eb;
+      --card: rgba(255,255,255,0.92);
+      --ink: #17202a;
+      --muted: #65717d;
+      --teal: #419d8b;
+      --blue: #3d7ea8;
+      --spark: #e95924;
+      --line: #e4ddd0;
+      --soft: #eef7f5;
+      --violet: #7d4e9e;
+      --orange-soft: #fff3ec;
+      --red-soft: #fff2f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #e7f8f3, var(--bg) 45%, #fff 100%);
+    }
+
+    .app { max-width: 1520px; margin: 0 auto; padding: 24px; }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 50px);
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 940px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .formula-pill {
+      background: var(--ink);
+      color: white;
+      padding: 16px 18px;
+      border-radius: 22px;
+      box-shadow: 0 12px 30px rgba(23,32,42,0.15);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+      line-height: 1.55;
+    }
+
+    .layout { display: grid; grid-template-columns: 430px 1fr; gap: 18px; }
+
+    .panel, .plot-card, .explain-card, .table-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: 0 16px 40px rgba(61,126,168,0.12);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel { padding: 18px; height: fit-content; position: sticky; top: 18px; }
+    .plot-card { padding: 12px; min-height: 690px; }
+    #mainPlot { width: 100%; height: 670px; border-radius: 22px; overflow: hidden; }
+
+    .section-title { font-size: 13px; color: var(--blue); font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; margin: 4px 0 12px; }
+    .control { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+
+    label { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; margin-bottom: 8px; gap: 10px; }
+    input, select { width: 100%; padding: 12px 13px; border: 1px solid var(--line); border-radius: 16px; background: white; color: var(--ink); font-size: 14px; outline: none; }
+    input[type="range"] { padding: 0; accent-color: var(--teal); }
+
+    .value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--soft); color: var(--teal); border: 1px solid #d4eee8; padding: 3px 8px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .hint { color: var(--muted); font-size: 13px; line-height: 1.45; margin: 10px 0 0; }
+
+    button { width: 100%; border: 0; background: var(--spark); color: white; padding: 12px 14px; border-radius: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 20px rgba(233,89,36,0.25); }
+
+    .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .module-btn { background: white; color: var(--ink); box-shadow: none; border: 1px solid var(--line); margin: 0; padding: 10px; border-radius: 14px; }
+    .module-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+
+    .results { display: grid; gap: 10px; margin-top: 14px; }
+    .metric { background: linear-gradient(135deg, #ffffff, #eef7f5); border: 1px solid #dcefea; border-radius: 20px; padding: 14px; }
+    .metric.main { background: linear-gradient(135deg, var(--teal), var(--blue)); color: white; border: none; }
+    .metric.orange { background: linear-gradient(135deg, #fff, var(--orange-soft)); border-color: #f5d4c4; }
+    .metric.violet { background: linear-gradient(135deg, #fff, #f4ecf8); border-color: #ead9f2; }
+    .metric .name { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 900; }
+    .metric.main .name { color: rgba(255,255,255,0.78); }
+    .metric .number { font-size: 23px; font-weight: 950; margin-top: 4px; letter-spacing: -0.03em; word-break: break-word; }
+    .metric .small { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.45; margin-top: 5px; word-break: break-word; }
+
+    .explain-card { margin-top: 18px; padding: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .explain-card h3 { margin: 0 0 8px; color: var(--teal); }
+    .explain-card p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    .table-card { margin-top: 18px; padding: 18px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--blue); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    @media (max-width: 1200px) {
+      header, .layout, .explain-card { grid-template-columns: 1fr; }
+      .panel { position: static; }
+      .formula-pill { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Non‑Euclidean Geometry Visualizer</h1>
+        <p class="subtitle">Compare flat, spherical, and hyperbolic geometry. See how geodesics, parallels, triangle angle sums, curvature, and distance change when geometry is no longer Euclidean.</p>
+      </div>
+      <div class="formula-pill">
+        Euclidean: K = 0, angles = 180°<br>
+        Spherical: K &gt; 0, angles &gt; 180°<br>
+        Hyperbolic: K &lt; 0, angles &lt; 180°
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel">
+        <div class="section-title">Geometry mode</div>
+        <div class="control">
+          <div class="module-grid">
+            <button class="module-btn active" data-mode="euclidean">Euclidean K=0</button>
+            <button class="module-btn" data-mode="spherical">Spherical K&gt;0</button>
+            <button class="module-btn" data-mode="hyperbolic">Hyperbolic K&lt;0</button>
+            <button class="module-btn" data-mode="compare">Compare all</button>
+          </div>
+          <p class="hint" id="modeHint">Flat geometry: geodesics are straight lines and triangle angle sum is exactly 180°.</p>
+        </div>
+
+        <div class="section-title">Concept</div>
+        <div class="control">
+          <select id="conceptSelect">
+            <option value="triangle">Triangle angle sum</option>
+            <option value="parallels">Parallels through a point</option>
+            <option value="geodesics">Geodesics / straightest paths</option>
+            <option value="curvature">Curvature and local grid</option>
+            <option value="tiling">Hyperbolic tiling / expansion</option>
+            <option value="saddle">Saddle intuition for negative curvature</option>
+          </select>
+          <p class="hint" id="conceptHint">Move the triangle vertices and compare the sum of its angles in different geometries.</p>
+        </div>
+
+        <div class="section-title">Triangle / points</div>
+        <div class="grid-2">
+          <div class="control"><label for="aU">A u <span class="value" id="aUVal"></span></label><input type="range" id="aU" min="-2.8" max="2.8" step="0.02" value="-1.2" /></div>
+          <div class="control"><label for="aV">A v <span class="value" id="aVVal"></span></label><input type="range" id="aV" min="-2.8" max="2.8" step="0.02" value="-0.5" /></div>
+          <div class="control"><label for="bU">B u <span class="value" id="bUVal"></span></label><input type="range" id="bU" min="-2.8" max="2.8" step="0.02" value="1.2" /></div>
+          <div class="control"><label for="bV">B v <span class="value" id="bVVal"></span></label><input type="range" id="bV" min="-2.8" max="2.8" step="0.02" value="-0.35" /></div>
+          <div class="control"><label for="cU">C u <span class="value" id="cUVal"></span></label><input type="range" id="cU" min="-2.8" max="2.8" step="0.02" value="0.15" /></div>
+          <div class="control"><label for="cV">C v <span class="value" id="cVVal"></span></label><input type="range" id="cV" min="-2.8" max="2.8" step="0.02" value="1.25" /></div>
+        </div>
+
+        <div class="section-title">Curvature / model scale</div>
+        <div class="control">
+          <label for="scaleSlider">Curvature strength <span class="value" id="scaleVal"></span></label>
+          <input type="range" id="scaleSlider" min="0.5" max="2.5" step="0.05" value="1" />
+          <p class="hint">Higher curvature strength makes spherical/hyperbolic effects more visible.</p>
+        </div>
+
+        <div class="section-title">Parallel line experiment</div>
+        <div class="control">
+          <label for="parallelAngle">Direction angle <span class="value" id="parallelAngleVal"></span></label>
+          <input type="range" id="parallelAngle" min="-1.4" max="1.4" step="0.02" value="0.25" />
+          <p class="hint">Through an external point: Euclidean has one parallel, spherical has none, hyperbolic has many non‑intersecting geodesics.</p>
+        </div>
+
+        <div class="results">
+          <div class="metric main"><div class="name" id="mainMetricName">Angle sum</div><div class="number" id="mainMetricValue">180°</div></div>
+          <div class="metric"><div class="name" id="secondMetricName">Curvature K</div><div class="number" id="secondMetricValue">0</div></div>
+          <div class="metric orange"><div class="name" id="thirdMetricName">Parallel postulate</div><div class="small" id="thirdMetricValue">Exactly one parallel through an external point.</div></div>
+          <div class="metric violet"><div class="name">Interpretation</div><div class="small" id="interpretationText">Flat geometry is the special case where curvature is zero.</div></div>
+        </div>
+      </aside>
+
+      <section>
+        <div class="plot-card"><div id="mainPlot"></div></div>
+
+        <div class="table-card">
+          <div class="section-title">What changes when curvature changes?</div>
+          <table>
+            <thead><tr><th>Concept</th><th>Euclidean K=0</th><th>Spherical K&gt;0</th><th>Hyperbolic K&lt;0</th></tr></thead>
+            <tbody id="summaryBody"></tbody>
+          </table>
+        </div>
+
+        <div class="explain-card">
+          <div><h3>Geodesic</h3><p>The straightest possible path inside a geometry. In flat space it is a line; on a sphere it is a great circle.</p></div>
+          <div><h3>Parallels</h3><p>Parallel behavior changes with curvature: one, none, or infinitely many depending on the geometry.</p></div>
+          <div><h3>Triangle sum</h3><p>The angle sum becomes a curvature detector: equal, greater, or less than 180°.</p></div>
+          <div><h3>Curvature</h3><p>Curvature is the hidden rule that changes distance, angle, area, and the meaning of straight.</p></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let geometryMode = 'euclidean';
+    const PI = Math.PI, TWO_PI = 2 * Math.PI;
+
+    const els = {
+      modeHint: document.getElementById('modeHint'), conceptSelect: document.getElementById('conceptSelect'), conceptHint: document.getElementById('conceptHint'),
+      aU: document.getElementById('aU'), aV: document.getElementById('aV'), bU: document.getElementById('bU'), bV: document.getElementById('bV'), cU: document.getElementById('cU'), cV: document.getElementById('cV'),
+      aUVal: document.getElementById('aUVal'), aVVal: document.getElementById('aVVal'), bUVal: document.getElementById('bUVal'), bVVal: document.getElementById('bVVal'), cUVal: document.getElementById('cUVal'), cVVal: document.getElementById('cVVal'),
+      scaleSlider: document.getElementById('scaleSlider'), scaleVal: document.getElementById('scaleVal'), parallelAngle: document.getElementById('parallelAngle'), parallelAngleVal: document.getElementById('parallelAngleVal'),
+      mainMetricName: document.getElementById('mainMetricName'), mainMetricValue: document.getElementById('mainMetricValue'), secondMetricName: document.getElementById('secondMetricName'), secondMetricValue: document.getElementById('secondMetricValue'), thirdMetricName: document.getElementById('thirdMetricName'), thirdMetricValue: document.getElementById('thirdMetricValue'), interpretationText: document.getElementById('interpretationText'), summaryBody: document.getElementById('summaryBody')
+    };
+
+    const modeHints = {
+      euclidean: 'Flat geometry: geodesics are straight lines and triangle angle sum is exactly 180°.',
+      spherical: 'Positive curvature: geodesics are great-circle arcs and triangles have angle sum greater than 180°.',
+      hyperbolic: 'Negative curvature: geodesics diverge and triangles have angle sum less than 180°.',
+      compare: 'Compare the same idea in all three geometries side by side.'
+    };
+
+    const conceptHints = {
+      triangle: 'Move the triangle vertices and compare the sum of its angles in different geometries.',
+      parallels: 'See how the parallel postulate changes when curvature changes.',
+      geodesics: 'Visualize what “straight” means in each geometry.',
+      curvature: 'See how a local grid bends, closes, or expands depending on curvature.',
+      tiling: 'In hyperbolic geometry, equal geometric steps visually compress near the boundary, showing infinite space inside a finite disk.',
+      saddle: 'A saddle surface gives a strong visual intuition for negative curvature and triangle angle defect.'
+    };
+
+    function format(x) {
+      if (!Number.isFinite(x)) return 'undefined';
+      if (Math.abs(x) < 1e-10) return '0';
+      if (Math.abs(x) > 1e6 || Math.abs(x) < 1e-5) return x.toExponential(4);
+      return x.toFixed(5).replace(/0+$/, '').replace(/\.$/, '');
+    }
+    function deg(x){ return x*180/Math.PI; }
+    function linspace(a,b,n){ const arr=[]; const h=(b-a)/(n-1); for(let i=0;i<n;i++) arr.push(a+i*h); return arr; }
+    function dot(a,b){ return a.reduce((s,v,i)=>s+v*b[i],0); }
+    function cross(a,b){ return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+    function norm(a){ return Math.sqrt(dot(a,a)); }
+    function scale(a,s){ return a.map(v=>v*s); }
+    function add(a,b){ return a.map((v,i)=>v+b[i]); }
+    function sub(a,b){ return a.map((v,i)=>v-b[i]); }
+    function normalize(a){ const n=norm(a); return n===0 ? a : scale(a,1/n); }
+    function clampDisk(p){ const r=Math.hypot(p[0],p[1]); return r>0.92 ? [p[0]*0.92/r,p[1]*0.92/r] : p; }
+
+    function getParams(){
+      const p = {
+        A: [parseFloat(els.aU.value), parseFloat(els.aV.value)],
+        B: [parseFloat(els.bU.value), parseFloat(els.bV.value)],
+        C: [parseFloat(els.cU.value), parseFloat(els.cV.value)],
+        scale: parseFloat(els.scaleSlider.value),
+        angle: parseFloat(els.parallelAngle.value),
+        concept: els.conceptSelect.value
+      };
+      if (geometryMode === 'hyperbolic' || geometryMode === 'compare') {
+        p.A = clampDisk([p.A[0]/3, p.A[1]/3]);
+        p.B = clampDisk([p.B[0]/3, p.B[1]/3]);
+        p.C = clampDisk([p.C[0]/3, p.C[1]/3]);
+      }
+      return p;
+    }
+
+    function updateLabels(p){
+      els.aUVal.textContent = format(parseFloat(els.aU.value)); els.aVVal.textContent = format(parseFloat(els.aV.value));
+      els.bUVal.textContent = format(parseFloat(els.bU.value)); els.bVVal.textContent = format(parseFloat(els.bV.value));
+      els.cUVal.textContent = format(parseFloat(els.cU.value)); els.cVVal.textContent = format(parseFloat(els.cV.value));
+      els.scaleVal.textContent = format(p.scale); els.parallelAngleVal.textContent = format(p.angle);
+      els.modeHint.textContent = modeHints[geometryMode]; els.conceptHint.textContent = conceptHints[p.concept] || '';
+    }
+
+    function euclideanAngle(A,B,C){ const u=sub(A,B), v=sub(C,B); return Math.acos(Math.max(-1,Math.min(1,dot(u,v)/(norm(u)*norm(v))))); }
+    function euclideanTriangleAngles(A,B,C){ return [euclideanAngle(B,A,C),euclideanAngle(A,B,C),euclideanAngle(A,C,B)]; }
+    function euclideanLine(P,Q,n=120){ return linspace(0,1,n).map(t=>[P[0]*(1-t)+Q[0]*t, P[1]*(1-t)+Q[1]*t, 0]); }
+
+    function sphereFromUV(P,R){
+      const u=P[0]/R, v=P[1]/R, rho=Math.hypot(u,v);
+      const theta = Math.min(PI-0.05, rho);
+      const phi = Math.atan2(v,u);
+      return [R*Math.sin(theta)*Math.cos(phi), R*Math.sin(theta)*Math.sin(phi), R*Math.cos(theta)];
+    }
+    function slerp(A,B,t,R){
+      const a=normalize(A), b=normalize(B); const omega=Math.acos(Math.max(-1,Math.min(1,dot(a,b))));
+      if(omega<1e-6) return scale(a,R);
+      return scale(normalize(add(scale(a,Math.sin((1-t)*omega)), scale(b,Math.sin(t*omega)))),R);
+    }
+    function sphericalGeodesic(A,B,R,n=120){ return linspace(0,1,n).map(t=>slerp(A,B,t,R)); }
+    function sphericalAngle(A,B,C){
+      const n1=normalize(cross(B,A)), n2=normalize(cross(C,A));
+      const t1=normalize(cross(n1,A)), t2=normalize(cross(A,n2));
+      return Math.acos(Math.max(-1,Math.min(1,dot(t1,t2))));
+    }
+    function sphericalTriangleAngles(A,B,C){ return [sphericalAngle(A,B,C), sphericalAngle(B,C,A), sphericalAngle(C,A,B)]; }
+
+    function circleFrom3Points(P,Q){
+      const x1=P[0], y1=P[1], x2=Q[0], y2=Q[1];
+      const d = 2*(x1*y2-y1*x2);
+      if (Math.abs(d)<1e-8) return null;
+      const a1=x1*x1+y1*y1+1, a2=x2*x2+y2*y2+1;
+      const cx=(a1*y2-a2*y1)/d, cy=(x1*a2-x2*a1)/d;
+      const r2 = cx*cx + cy*cy - 1;
+      if (r2 <= 0 || !Number.isFinite(r2)) return null;
+      return {c:[cx,cy], r:Math.sqrt(r2)};
+    }
+    function hyperbolicGeodesic(P,Q,n=150){
+      const circle=circleFrom3Points(P,Q);
+      if(!circle) return euclideanLine([P[0],P[1],0],[Q[0],Q[1],0],n).map(p=>[p[0],p[1],0]);
+      const c=circle.c, r=circle.r;
+      let a1=Math.atan2(P[1]-c[1],P[0]-c[0]), a2=Math.atan2(Q[1]-c[1],Q[0]-c[0]);
+      let diff=a2-a1;
+      while(diff>PI) diff-=TWO_PI;
+      while(diff<-PI) diff+=TWO_PI;
+      return linspace(0,1,n).map(t=>{ const a=a1+diff*t; return [c[0]+r*Math.cos(a), c[1]+r*Math.sin(a),0]; });
+    }
+    function tangentAtPath(path, atStart){ return atStart ? normalize(sub(path[1],path[0])) : normalize(sub(path[path.length-2],path[path.length-1])); }
+    function angleBetween2(u,v){ return Math.acos(Math.max(-1,Math.min(1,(u[0]*v[0]+u[1]*v[1])/(Math.hypot(u[0],u[1])*Math.hypot(v[0],v[1]))))); }
+    function hyperbolicTriangleAngles(A,B,C){
+      const AB=hyperbolicGeodesic(A,B), AC=hyperbolicGeodesic(A,C), BA=hyperbolicGeodesic(B,A), BC=hyperbolicGeodesic(B,C), CA=hyperbolicGeodesic(C,A), CB=hyperbolicGeodesic(C,B);
+      return [angleBetween2(tangentAtPath(AB,true),tangentAtPath(AC,true)), angleBetween2(tangentAtPath(BA,true),tangentAtPath(BC,true)), angleBetween2(tangentAtPath(CA,true),tangentAtPath(CB,true))];
+    }
+
+    function sceneLayout(title, mode='3d'){
+      if(mode==='2d') return {margin:{l:45,r:18,t:38,b:45},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(255,255,255,.35)',xaxis:{title:'x',gridcolor:'#e4ddd0',zeroline:false,scaleanchor:'y',scaleratio:1},yaxis:{title:'y',gridcolor:'#e4ddd0',zeroline:false},showlegend:true,legend:{x:.02,y:.98,bgcolor:'rgba(255,255,255,.78)',bordercolor:'#e4ddd0',borderwidth:1},annotations:[{x:.5,y:1.08,xref:'paper',yref:'paper',showarrow:false,text:title,font:{size:15,color:'#17202a'}}]};
+      return {margin:{l:0,r:0,t:38,b:0},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',showlegend:true,legend:{x:.02,y:.98,bgcolor:'rgba(255,255,255,.78)',bordercolor:'#e4ddd0',borderwidth:1},scene:{xaxis:{title:'x',gridcolor:'#e4ddd0',zerolinecolor:'#17202a'},yaxis:{title:'y',gridcolor:'#e4ddd0',zerolinecolor:'#17202a'},zaxis:{title:'z',gridcolor:'#e4ddd0',zerolinecolor:'#17202a'},aspectmode:'data',camera:{eye:{x:1.4,y:1.35,z:1.1}}},annotations:[{x:.5,y:1.03,xref:'paper',yref:'paper',showarrow:false,text:title,font:{size:15,color:'#17202a'}}]};
+    }
+
+    function makeEuclidean(p){
+      const A=[p.A[0],p.A[1],0], B=[p.B[0],p.B[1],0], C=[p.C[0],p.C[1],0], traces=[];
+      if(p.concept==='curvature' || p.concept==='tiling' || p.concept==='saddle') addEuclideanGrid(traces);
+      if(p.concept==='parallels') addEuclideanParallels(traces,p);
+      else if(p.concept==='geodesics') addEuclideanGeodesics(traces,A,B,C);
+      else addEuclideanTriangle(traces,A,B,C);
+      Plotly.react('mainPlot', traces, sceneLayout('Euclidean geometry: flat space, K = 0','2d'), {responsive:true,displaylogo:false});
+      updateMetrics('euclidean',euclideanTriangleAngles(A,B,C),0);
+    }
+    function addEuclideanTriangle(traces,A,B,C){
+      traces.push({type:'scatter',mode:'lines',x:[A[0],B[0],C[0],A[0]],y:[A[1],B[1],C[1],A[1]],line:{color:'#e95924',width:5},name:'triangle sides'});
+      traces.push({type:'scatter',mode:'markers+text',x:[A[0],B[0],C[0]],y:[A[1],B[1],C[1]],marker:{size:10,color:['#419d8b','#3d7ea8','#e95924']},text:['A','B','C'],textposition:'top center',name:'vertices'});
+    }
+    function addEuclideanGeodesics(traces,A,B,C){ addEuclideanTriangle(traces,A,B,C); traces.push({type:'scatter',mode:'lines',x:[-3,3],y:[0,0],line:{color:'#17202a',width:2,dash:'dot'},name:'sample straight geodesic'}); }
+    function addEuclideanGrid(traces){
+      for(let x=-3;x<=3;x+=0.5) traces.push({type:'scatter',mode:'lines',x:[x,x],y:[-3,3],line:{color:'rgba(61,126,168,.25)',width:1},showlegend:false,hoverinfo:'skip'});
+      for(let y=-3;y<=3;y+=0.5) traces.push({type:'scatter',mode:'lines',x:[-3,3],y:[y,y],line:{color:'rgba(65,157,139,.25)',width:1},showlegend:false,hoverinfo:'skip'});
+    }
+    function addEuclideanParallels(traces,p){
+      const m=Math.tan(p.angle), baseY=0, extY=1.2;
+      traces.push({type:'scatter',mode:'lines',x:[-3,3],y:[baseY+m*(-3),baseY+m*3],line:{color:'#17202a',width:5},name:'given line'});
+      traces.push({type:'scatter',mode:'lines',x:[-3,3],y:[extY+m*(-3),extY+m*3],line:{color:'#e95924',width:5},name:'unique parallel'});
+      traces.push({type:'scatter',mode:'markers+text',x:[0],y:[extY],marker:{size:12,color:'#419d8b'},text:['P'],textposition:'top center',name:'external point'});
+    }
+
+    function makeSphere(p){
+      const R=2.2/p.scale, A=sphereFromUV(p.A,R), B=sphereFromUV(p.B,R), C=sphereFromUV(p.C,R), traces=[];
+      addSphereSurface(traces,R);
+      if(p.concept==='curvature' || p.concept==='tiling' || p.concept==='saddle') addSphereGrid(traces,R);
+      if(p.concept==='parallels') addSphericalParallels(traces,R,p);
+      else if(p.concept==='geodesics') addSphericalTriangle(traces,A,B,C,R,true);
+      else addSphericalTriangle(traces,A,B,C,R,false);
+      Plotly.react('mainPlot', traces, sceneLayout('Spherical geometry: positive curvature, K > 0'), {responsive:true,displaylogo:false});
+      updateMetrics('spherical',sphericalTriangleAngles(A,B,C),1/(R*R));
+    }
+    function addSphereSurface(traces,R){
+      const us=linspace(0,TWO_PI,70), vs=linspace(0.03,PI-0.03,50), X=[],Y=[],Z=[];
+      for(const v of vs){const xr=[],yr=[],zr=[]; for(const u of us){xr.push(R*Math.sin(v)*Math.cos(u));yr.push(R*Math.sin(v)*Math.sin(u));zr.push(R*Math.cos(v));} X.push(xr); Y.push(yr); Z.push(zr);}
+      traces.push({type:'surface',x:X,y:Y,z:Z,colorscale:'Viridis',opacity:.55,showscale:false,name:'sphere'});
+    }
+    function addSphericalTriangle(traces,A,B,C,R,withChord){
+      const AB=sphericalGeodesic(A,B,R), BC=sphericalGeodesic(B,C,R), CA=sphericalGeodesic(C,A,R), path=[...AB,...BC,...CA];
+      traces.push({type:'scatter3d',mode:'lines',x:path.map(q=>q[0]),y:path.map(q=>q[1]),z:path.map(q=>q[2]),line:{color:'#e95924',width:8},name:'geodesic triangle'});
+      traces.push({type:'scatter3d',mode:'markers+text',x:[A[0],B[0],C[0]],y:[A[1],B[1],C[1]],z:[A[2],B[2],C[2]],marker:{size:8,color:['#419d8b','#3d7ea8','#e95924']},text:['A','B','C'],textposition:'top center',name:'vertices'});
+      if(withChord) traces.push({type:'scatter3d',mode:'lines',x:[A[0],B[0],C[0],A[0]],y:[A[1],B[1],C[1],A[1]],z:[A[2],B[2],C[2],A[2]],line:{color:'#17202a',width:4,dash:'dash'},name:'ambient straight chords'});
+    }
+    function addSphereGrid(traces,R){
+      for(const v of [PI/6,PI/3,PI/2,2*PI/3,5*PI/6]){
+        const pts=linspace(0,TWO_PI,200).map(u=>[R*Math.sin(v)*Math.cos(u),R*Math.sin(v)*Math.sin(u),R*Math.cos(v)]);
+        traces.push({type:'scatter3d',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),z:pts.map(q=>q[2]),line:{color:'rgba(65,157,139,.55)',width:3},showlegend:false});
+      }
+      for(const u of linspace(0,TWO_PI,12)){
+        const pts=linspace(0.05,PI-0.05,120).map(v=>[R*Math.sin(v)*Math.cos(u),R*Math.sin(v)*Math.sin(u),R*Math.cos(v)]);
+        traces.push({type:'scatter3d',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),z:pts.map(q=>q[2]),line:{color:'rgba(61,126,168,.45)',width:2},showlegend:false});
+      }
+    }
+    function addSphericalParallels(traces,R,p){
+      const equator=linspace(0,TWO_PI,240).map(u=>[R*Math.cos(u),R*Math.sin(u),0]);
+      const meridian=linspace(0,TWO_PI,240).map(u=>[R*Math.sin(u)*Math.cos(p.angle),R*Math.sin(u)*Math.sin(p.angle),R*Math.cos(u)]);
+      const P=[0,0,R];
+      traces.push({type:'scatter3d',mode:'lines',x:equator.map(q=>q[0]),y:equator.map(q=>q[1]),z:equator.map(q=>q[2]),line:{color:'#17202a',width:7},name:'given great circle'});
+      traces.push({type:'scatter3d',mode:'lines',x:meridian.map(q=>q[0]),y:meridian.map(q=>q[1]),z:meridian.map(q=>q[2]),line:{color:'#e95924',width:6},name:'any great circle through P intersects'});
+      traces.push({type:'scatter3d',mode:'markers+text',x:[P[0]],y:[P[1]],z:[P[2]],marker:{size:8,color:'#419d8b'},text:['P'],textposition:'top center',name:'external point'});
+    }
+
+    function makeHyperbolic(p){
+      if(p.concept==='saddle') { makeHyperbolicSaddle(p); return; }
+      const A=p.A, B=p.B, C=p.C, traces=[];
+      addPoincareDisk(traces);
+      if(p.concept==='curvature') addHyperbolicGrid(traces, true);
+      if(p.concept==='tiling') addHyperbolicTiling(traces);
+      if(p.concept==='parallels') addHyperbolicParallels(traces,p);
+      else if(p.concept==='geodesics') addHyperbolicTriangle(traces,A,B,C,true);
+      else addHyperbolicTriangle(traces,A,B,C,false);
+      const layout = sceneLayout('Hyperbolic geometry: Poincaré disk model, K < 0','2d');
+      layout.xaxis.range=[-1.08,1.08]; layout.yaxis.range=[-1.08,1.08];
+      Plotly.react('mainPlot', traces, layout, {responsive:true,displaylogo:false});
+      updateMetrics('hyperbolic',hyperbolicTriangleAngles(A,B,C),-p.scale*p.scale);
+    }
+    function addPoincareDisk(traces){
+      const circle=linspace(0,TWO_PI,420).map(t=>[Math.cos(t),Math.sin(t)]);
+      traces.push({type:'scatter',mode:'lines',x:circle.map(q=>q[0]),y:circle.map(q=>q[1]),fill:'toself',fillcolor:'rgba(231,248,243,.58)',line:{color:'#17202a',width:5},name:'boundary at infinity'});
+      [0.25,0.45,0.62,0.76,0.87,0.95].forEach((r,i)=>{
+        const pts=linspace(0,TWO_PI,240).map(t=>[r*Math.cos(t),r*Math.sin(t)]);
+        traces.push({type:'scatter',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),line:{color:`rgba(23,32,42,${0.09+i*0.025})`,width:1},showlegend:false,hoverinfo:'skip'});
+      });
+    }
+    function addHyperbolicTriangle(traces,A,B,C,withEuclidean){
+      const AB=hyperbolicGeodesic(A,B), BC=hyperbolicGeodesic(B,C), CA=hyperbolicGeodesic(C,A), path=[...AB,...BC,...CA];
+      traces.push({type:'scatter',mode:'lines',x:path.map(q=>q[0]),y:path.map(q=>q[1]),line:{color:'#e95924',width:5},name:'hyperbolic geodesic triangle'});
+      traces.push({type:'scatter',mode:'markers+text',x:[A[0],B[0],C[0]],y:[A[1],B[1],C[1]],marker:{size:11,color:['#419d8b','#3d7ea8','#e95924']},text:['A','B','C'],textposition:'top center',name:'vertices'});
+      if(withEuclidean) traces.push({type:'scatter',mode:'lines',x:[A[0],B[0],C[0],A[0]],y:[A[1],B[1],C[1],A[1]],line:{color:'#17202a',width:2,dash:'dash'},name:'Euclidean chord comparison'});
+    }
+    function addHyperbolicGrid(traces, strong=false){
+      const width = strong ? 2.2 : 1.3, alpha = strong ? 0.62 : 0.35;
+      for(let a=-0.9;a<=0.91;a+=0.15){
+        const pts1=hyperbolicGeodesic([a,-0.98],[a,0.98]), pts2=hyperbolicGeodesic([-0.98,a],[0.98,a]);
+        traces.push({type:'scatter',mode:'lines',x:pts1.map(q=>q[0]),y:pts1.map(q=>q[1]),line:{color:`rgba(61,126,168,${alpha})`,width},showlegend:false,hoverinfo:'skip'});
+        traces.push({type:'scatter',mode:'lines',x:pts2.map(q=>q[0]),y:pts2.map(q=>q[1]),line:{color:`rgba(65,157,139,${alpha})`,width},showlegend:false,hoverinfo:'skip'});
+      }
+      for(const th of linspace(0,Math.PI,13)){
+        const P=[0.98*Math.cos(th),0.98*Math.sin(th)], Q=[-P[0],-P[1]], pts=hyperbolicGeodesic(P,Q);
+        traces.push({type:'scatter',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),line:{color:'rgba(233,89,36,.22)',width:1.6},showlegend:false,hoverinfo:'skip'});
+      }
+    }
+    function addHyperbolicTiling(traces){
+      addHyperbolicGrid(traces, true);
+      const rings=[0.18,0.34,0.50,0.64,0.76,0.86,0.94];
+      rings.forEach((r,idx)=>{
+        const count=8+idx*6;
+        for(let k=0;k<count;k++){
+          const th1=TWO_PI*k/count, th2=TWO_PI*(k+0.75)/count;
+          const P=[r*Math.cos(th1),r*Math.sin(th1)], Q=[Math.min(0.985,r+0.09)*Math.cos(th2),Math.min(0.985,r+0.09)*Math.sin(th2)];
+          const pts=hyperbolicGeodesic(P,Q,60);
+          traces.push({type:'scatter',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),line:{color:idx%2?'rgba(125,78,158,.45)':'rgba(233,89,36,.38)',width:1.2},showlegend:false,hoverinfo:'skip'});
+        }
+      });
+      traces.push({type:'scatter',mode:'text',x:[0],y:[-1.16],text:['The boundary is infinitely far away in the hyperbolic metric'],textfont:{size:14,color:'#17202a'},showlegend:false,hoverinfo:'skip'});
+    }
+    function addHyperbolicParallels(traces,p){
+      traces.push({type:'scatter',mode:'lines',x:[-0.98,0.98],y:[0,0],line:{color:'#17202a',width:6},name:'given geodesic L'});
+      const P=[0,0.48];
+      const angles=[-1.22,-0.9,-0.62,-0.32,0,0.32,0.62,0.9,1.22].map(a=>a+p.angle*0.35);
+      angles.forEach((ang,i)=>{
+        const end1=[0.985*Math.cos(ang),0.985*Math.sin(ang)], pts=hyperbolicGeodesic(P,end1,180);
+        const isLimit = i===2 || i===6;
+        traces.push({type:'scatter',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),line:{color:isLimit?'#e95924':'rgba(233,89,36,.42)',width:isLimit?5:2.4,dash:isLimit?'solid':'dot'},name:isLimit?'limiting parallel':'other non-intersecting geodesics',showlegend:i===2||i===0,hoverinfo:'skip'});
+      });
+      [-0.15,0.15].forEach(ang=>{
+        const end=[0.985*Math.cos(-Math.PI/2+ang),0.985*Math.sin(-Math.PI/2+ang)], pts=hyperbolicGeodesic(P,end,120);
+        traces.push({type:'scatter',mode:'lines',x:pts.map(q=>q[0]),y:pts.map(q=>q[1]),line:{color:'rgba(61,126,168,.45)',width:2},name:'intersecting geodesic',showlegend:false,hoverinfo:'skip'});
+      });
+      traces.push({type:'scatter',mode:'markers+text',x:[P[0]],y:[P[1]],marker:{size:14,color:'#419d8b',line:{color:'#17202a',width:1}},text:['P'],textposition:'top center',name:'external point'});
+      traces.push({type:'scatter',mode:'text',x:[0],y:[-1.12],text:['Infinitely many geodesics through P do not meet L'],textfont:{size:14,color:'#17202a'},showlegend:false,hoverinfo:'skip'});
+    }
+
+    function makeHyperbolicSaddle(p){
+      const scaleS=p.scale, xs=linspace(-2.2,2.2,70), ys=linspace(-2.2,2.2,70);
+      const X=[],Y=[],Z=[],C=[];
+      for(const y of ys){
+        const xr=[],yr=[],zr=[],cr=[];
+        for(const x of xs){ xr.push(x); yr.push(y); zr.push(scaleS*(x*x-y*y)/3); cr.push(-scaleS); }
+        X.push(xr); Y.push(yr); Z.push(zr); C.push(cr);
+      }
+      const saddlePoint = (x,y)=>[x,y,scaleS*(x*x-y*y)/3];
+      const saddlePath = (P,Q,n=120,bulge=0)=>linspace(0,1,n).map(t=>saddlePoint(P[0]*(1-t)+Q[0]*t, P[1]*(1-t)+Q[1]*t + bulge*Math.sin(Math.PI*t)));
+      const surface={type:'surface',x:X,y:Y,z:Z,surfacecolor:C,colorscale:[[0,'#7d4e9e'],[1,'#e95924']],opacity:.78,showscale:false,name:'saddle intuition'};
+      const grid=[];
+      for(let a=-2;a<=2.01;a+=0.5){
+        const curve1=linspace(-2.2,2.2,100).map(x=>saddlePoint(x,a)), curve2=linspace(-2.2,2.2,100).map(y=>saddlePoint(a,y));
+        grid.push({type:'scatter3d',mode:'lines',x:curve1.map(q=>q[0]),y:curve1.map(q=>q[1]),z:curve1.map(q=>q[2]),line:{color:'rgba(23,32,42,.25)',width:1.8},showlegend:false,hoverinfo:'skip'});
+        grid.push({type:'scatter3d',mode:'lines',x:curve2.map(q=>q[0]),y:curve2.map(q=>q[1]),z:curve2.map(q=>q[2]),line:{color:'rgba(23,32,42,.25)',width:1.8},showlegend:false,hoverinfo:'skip'});
+      }
+      const A=[-1.45,-0.55], B=[1.35,-0.45], Cc=[0.15,1.35];
+      const AB=saddlePath(A,B,140,-0.18), BC=saddlePath(B,Cc,140,0.16), CA=saddlePath(Cc,A,140,0.14), tri=[...AB,...BC,...CA];
+      const Av=saddlePoint(A[0],A[1]), Bv=saddlePoint(B[0],B[1]), Cv=saddlePoint(Cc[0],Cc[1]);
+      const triangleTrace={type:'scatter3d',mode:'lines',x:tri.map(q=>q[0]),y:tri.map(q=>q[1]),z:tri.map(q=>q[2]+0.025),line:{color:'#e95924',width:9},name:'triangle on negative curvature'};
+      const vertexTrace={type:'scatter3d',mode:'markers+text',x:[Av[0],Bv[0],Cv[0]],y:[Av[1],Bv[1],Cv[1]],z:[Av[2]+0.08,Bv[2]+0.08,Cv[2]+0.08],marker:{size:8,color:['#419d8b','#3d7ea8','#e95924']},text:['A','B','C'],textposition:'top center',name:'vertices'};
+      const angleLabels={type:'scatter3d',mode:'text',x:[Av[0]-0.18,Bv[0]+0.12,Cv[0]],y:[Av[1]-0.08,Bv[1]-0.08,Cv[1]+0.12],z:[Av[2]+0.22,Bv[2]+0.22,Cv[2]+0.22],text:['≈ 52°','≈ 49°','≈ 47°'],textfont:{size:15,color:'#17202a'},name:'angles',showlegend:false};
+      const up=linspace(-2,2,120).map(t=>saddlePoint(t,0)), down=linspace(-2,2,120).map(t=>saddlePoint(0,t));
+      grid.push({type:'scatter3d',mode:'lines',x:up.map(q=>q[0]),y:up.map(q=>q[1]),z:up.map(q=>q[2]),line:{color:'rgba(233,89,36,.75)',width:5},name:'bends upward'});
+      grid.push({type:'scatter3d',mode:'lines',x:down.map(q=>q[0]),y:down.map(q=>q[1]),z:down.map(q=>q[2]),line:{color:'rgba(61,126,168,.75)',width:5},name:'bends downward'});
+      const layout=sceneLayout('Negative curvature intuition: triangle angle sum below 180°');
+      layout.scene.camera.eye={x:1.55,y:1.45,z:0.95};
+      layout.annotations=[{x:.5,y:1.03,xref:'paper',yref:'paper',showarrow:false,text:'Saddle intuition: negative curvature creates angle defect',font:{size:15,color:'#17202a'}},{x:.5,y:.02,xref:'paper',yref:'paper',showarrow:false,text:'Example visual angle sum: 52° + 49° + 47° ≈ 148° < 180°',font:{size:15,color:'#e95924'}}];
+      Plotly.react('mainPlot',[surface,...grid,triangleTrace,vertexTrace,angleLabels],layout,{responsive:true,displaylogo:false});
+      els.mainMetricName.textContent='Triangle angle sum'; els.mainMetricValue.textContent='≈ 148°';
+      els.secondMetricName.textContent='Angle defect'; els.secondMetricValue.textContent='≈ 32°';
+      els.thirdMetricName.textContent='Negative curvature effect'; els.thirdMetricValue.textContent='On negative curvature, geodesic triangles have angle sum lower than 180°.';
+      els.interpretationText.textContent='This saddle is a local visual model, not the exact full hyperbolic plane. It shows the key intuition: negative curvature makes geodesics spread apart, so triangles become thinner and their angle sum drops below 180°.';
+    }
+
+    function makeCompare(p){
+      const traces=[];
+      const offsets=[-3,0,3];
+      const labels=['Euclidean K=0','Spherical K>0','Hyperbolic K<0'];
+      const subLabels=['angles = 180°','angles > 180°','angles < 180°'];
+      const colors=['#3d7ea8','#419d8b','#e95924'];
+
+      function addLabel(x,title,subtitle){
+        traces.push({type:'scatter',mode:'text',x:[x],y:[1.33],text:[`<b>${title}</b><br>${subtitle}`],textfont:{size:15,color:'#17202a'},showlegend:false,hoverinfo:'skip'});
+      }
+
+      // Euclidean triangle.
+      const EA=[offsets[0]-0.65,-0.45], EB=[offsets[0]+0.65,-0.38], EC=[offsets[0]+0.05,0.78];
+      traces.push({type:'scatter',mode:'lines+markers+text',x:[EA[0],EB[0],EC[0],EA[0]],y:[EA[1],EB[1],EC[1],EA[1]],line:{color:colors[0],width:4},marker:{size:8,color:colors[0]},text:['A','B','C',''],textposition:'top center',name:'Euclidean triangle'});
+      addLabel(offsets[0],labels[0],subLabels[0]);
+
+      // Spherical visual projection with bulging sides.
+      const SA=[offsets[1]-0.68,-0.43], SB=[offsets[1]+0.68,-0.36], SC=[offsets[1]+0.02,0.78];
+      traces.push({type:'scatter',mode:'lines',x:[SA[0],offsets[1]-0.1,SB[0],offsets[1]+0.5,SC[0],offsets[1]-0.5,SA[0]],y:[SA[1],-0.78,SB[1],0.28,SC[1],0.22,SA[1]],line:{color:colors[1],width:4,shape:'spline'},name:'Spherical geodesic triangle'});
+      traces.push({type:'scatter',mode:'markers+text',x:[SA[0],SB[0],SC[0]],y:[SA[1],SB[1],SC[1]],marker:{size:8,color:colors[1]},text:['A','B','C'],textposition:'top center',showlegend:false});
+      addLabel(offsets[1],labels[1],subLabels[1]);
+
+      // Hyperbolic disk and triangle.
+      const circle=linspace(0,TWO_PI,220).map(t=>[offsets[2]+Math.cos(t),Math.sin(t)]);
+      traces.push({type:'scatter',mode:'lines',x:circle.map(q=>q[0]),y:circle.map(q=>q[1]),line:{color:'#17202a',width:3},name:'Hyperbolic boundary'});
+      const HA=[-0.55,-0.35], HB=[0.55,-0.25], HC=[0.05,0.55];
+      const hpath=[...hyperbolicGeodesic(HA,HB),...hyperbolicGeodesic(HB,HC),...hyperbolicGeodesic(HC,HA)].map(q=>[q[0]+offsets[2],q[1]]);
+      traces.push({type:'scatter',mode:'lines',x:hpath.map(q=>q[0]),y:hpath.map(q=>q[1]),line:{color:colors[2],width:4},name:'Hyperbolic geodesic triangle'});
+      traces.push({type:'scatter',mode:'markers+text',x:[HA[0]+offsets[2],HB[0]+offsets[2],HC[0]+offsets[2]],y:[HA[1],HB[1],HC[1]],marker:{size:8,color:colors[2]},text:['A','B','C'],textposition:'top center',showlegend:false});
+      addLabel(offsets[2],labels[2],subLabels[2]);
+
+      const layout=sceneLayout('Compare all: triangle angle sum changes with curvature','2d');
+      layout.xaxis.range=[-4.25,4.25]; layout.yaxis.range=[-1.35,1.55];
+      Plotly.react('mainPlot',traces,layout,{responsive:true,displaylogo:false});
+      els.mainMetricName.textContent='Core comparison'; els.mainMetricValue.textContent='= / > / < 180°';
+      els.secondMetricName.textContent='Curvature'; els.secondMetricValue.textContent='0 / + / −';
+      els.thirdMetricName.textContent='Parallel behavior'; els.thirdMetricValue.textContent='Euclidean: one. Spherical: none. Hyperbolic: many.';
+      els.interpretationText.textContent='Compare mode is a visual summary: changing curvature changes what counts as straight, how parallels behave, and the angle sum of triangles.';
+    }
+
+    function updateMetrics(mode, angles, K){
+      const sum=angles.reduce((s,a)=>s+a,0), excess=deg(sum)-180;
+      els.mainMetricName.textContent='Triangle angle sum'; els.mainMetricValue.textContent=`${format(deg(sum))}°`;
+      els.secondMetricName.textContent='Curvature K'; els.secondMetricValue.textContent=format(K);
+      els.thirdMetricName.textContent='Parallel postulate';
+      if(mode==='euclidean') els.thirdMetricValue.textContent='Exactly one parallel through an external point.';
+      if(mode==='spherical') els.thirdMetricValue.textContent='No true parallels: great circles eventually meet.';
+      if(mode==='hyperbolic') els.thirdMetricValue.textContent='Infinitely many hyperbolic parallels through an external point.';
+      if(mode==='euclidean') els.interpretationText.textContent='Zero curvature means the familiar Euclidean rules: straight lines, one parallel, and triangle angles sum to 180°.';
+      if(mode==='spherical') els.interpretationText.textContent=`Positive curvature adds angular excess. This triangle is about ${format(excess)}° above 180°.`;
+      if(mode==='hyperbolic') els.interpretationText.textContent=`Negative curvature creates angular defect. This triangle is about ${format(-excess)}° below 180°.`;
+    }
+
+    function updateSummary(){
+      const rows=[
+        ['Geodesic','Straight line','Great circle arc','Circle arc orthogonal to disk boundary'],
+        ['Parallel postulate','Exactly one parallel through a point','No true parallel geodesics','Infinitely many non-intersecting geodesics'],
+        ['Triangle angles','= 180°','> 180°','< 180°'],
+        ['Curvature','K = 0','K > 0','K < 0'],
+        ['Model intuition','Plane','Sphere / globe','Poincaré disk / saddle-like geometry'],
+        ['Area relation','No angle defect','Area proportional to angle excess','Area proportional to angle defect']
+      ];
+      els.summaryBody.innerHTML='';
+      rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td>`; els.summaryBody.appendChild(tr); });
+    }
+
+    function update(){
+      const p=getParams(); updateLabels(p); updateSummary();
+      if(geometryMode==='euclidean') makeEuclidean(p);
+      else if(geometryMode==='spherical') makeSphere(p);
+      else if(geometryMode==='hyperbolic') makeHyperbolic(p);
+      else makeCompare(p);
+    }
+
+    function runTests(){
+      const required = ['makeEuclidean','makeSphere','makeHyperbolic','makeCompare','update','hyperbolicGeodesic','hyperbolicTriangleAngles'];
+      required.forEach(name => console.assert(typeof window[name] === 'function', `${name} should be defined`));
+      const angles = euclideanTriangleAngles([0,0,0],[1,0,0],[0,1,0]).map(deg);
+      const sum = angles.reduce((a,b)=>a+b,0);
+      console.assert(Math.abs(sum - 180) < 1e-6, 'Euclidean triangle angle sum test failed');
+      const path = hyperbolicGeodesic([0,0],[0.5,0.2],10);
+      console.assert(Array.isArray(path) && path.length === 10, 'Hyperbolic geodesic path length test failed');
+      console.info('Non-Euclidean visualizer tests passed.');
+    }
+
+    document.querySelectorAll('.module-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        geometryMode=btn.dataset.mode;
+        document.querySelectorAll('.module-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        update();
+      });
+    });
+
+    [els.conceptSelect,els.aU,els.aV,els.bU,els.bV,els.cU,els.cV,els.scaleSlider,els.parallelAngle].forEach(el=>{
+      el.addEventListener('input',update); el.addEventListener('change',update);
+    });
+
+    window.makeEuclidean = makeEuclidean;
+    window.makeSphere = makeSphere;
+    window.makeHyperbolic = makeHyperbolic;
+    window.makeCompare = makeCompare;
+    window.update = update;
+    window.hyperbolicGeodesic = hyperbolicGeodesic;
+    window.hyperbolicTriangleAngles = hyperbolicTriangleAngles;
+
+    runTests();
+    update();
+  </script>
+</body>
+</html>
