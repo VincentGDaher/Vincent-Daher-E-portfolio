@@ -552,6 +552,13 @@ button {
   font-weight: 900;
 }
 
+.navigation-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--teal);
+  font-size: 0.95rem;
+}
+
 .quick-card:hover {
   transform: translateY(-4px);
   border-color: rgba(21, 143, 146, 0.45);
