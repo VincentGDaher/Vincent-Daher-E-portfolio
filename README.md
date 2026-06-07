@@ -1,118 +1,40 @@
 # Vincent Daher Professional E-Portfolio
 
-This is a React + Vite e-portfolio for Vincent Daher, a mathematics teacher, trainer, M1 student, and founder of Alphaducation. It is designed as both an M1 stage portfolio and a long-term professional portfolio.
+This is a classical static website for Vincent Daher. It does not need React, Vite, npm, or a build step.
 
-## Install
+## Files
 
-```bash
-npm install
-```
+- `index.html` contains the page content and structure.
+- `styles.css` contains the visual design and responsive layout.
+- `script.js` contains the small mobile navigation interaction.
 
-On Windows PowerShell, if `npm` is blocked by the local execution policy, use:
+## How To View Locally
 
-```bash
-npm.cmd install
-```
+Open `index.html` directly in your browser.
 
-## Run Locally
+You can double-click it from the folder, or right-click and choose **Open with** your browser.
 
-```bash
-npm run dev
-```
+## How To Edit
 
-PowerShell alternative:
+Edit:
 
-```bash
-npm.cmd run dev
-```
+- `index.html` for text, sections, links, and placeholders;
+- `styles.css` for colors, spacing, typography, and responsive design;
+- `script.js` only if you want to change the mobile menu behavior.
 
-Vite will print a local URL, usually `http://localhost:5173/`.
+## How To Deploy On GitHub Pages
 
-Do not open the root `index.html` by double-clicking it. That file is a development entry point and needs Vite to compile the React app.
+1. Commit and push the files to GitHub.
+2. Go to the repository on GitHub.
+3. Open **Settings > Pages**.
+4. Choose **Deploy from a branch**.
+5. Select branch `main`.
+6. Select folder `/root`.
+7. Save.
 
-## Build
+GitHub Pages will serve the root `index.html` directly.
 
-```bash
-npm run build
-```
-
-PowerShell alternative:
-
-```bash
-npm.cmd run build
-```
-
-The production files are generated in `docs/`.
-
-To preview the production version locally, run:
-
-```bash
-npm.cmd run preview
-```
-
-Then open the URL printed by Vite. Opening `docs/index.html` directly by double-clicking can still show a blank page in some browsers because modern JavaScript modules are blocked or restricted from `file://` pages.
-
-## Edit Content
-
-Most placeholder content is stored in:
-
-```text
-src/data/portfolioData.js
-```
-
-Update this file to replace placeholders for:
-
-- academic background;
-- teaching and training experience;
-- stage observations;
-- didactic analysis;
-- artefacts;
-- teaching resources;
-- research notes;
-- contact links.
-
-The main page structure is in:
-
-```text
-src/App.jsx
-```
-
-Reusable components are in:
-
-```text
-src/components/
-```
-
-Global styling is in:
-
-```text
-src/styles/global.css
-```
-
-## GitHub Pages Deployment
-
-The project is prepared for GitHub Pages with:
-
-- the build script in `package.json`, using relative asset paths so the built site works on GitHub Pages and in local previews;
-- `.github/workflows/deploy.yml`, which builds and deploys the `docs/` folder automatically.
-
-Recommended deployment with GitHub Actions:
-
-1. Push the project to the `main` branch on GitHub.
-2. In the GitHub repository, go to **Settings > Pages**.
-3. Set the source to **GitHub Actions**.
-4. Push changes to `main`; the workflow will build and publish the site.
-
-Alternative deployment from a branch:
-
-1. Run `npm.cmd run build`.
-2. Commit and push the generated `docs/` folder.
-3. In **Settings > Pages**, choose **Deploy from a branch**.
-4. Select branch `main` and folder `/docs`.
-
-The source `index.html` in the project root should be opened through Vite, not directly in the browser. Use `npm.cmd run dev` for local editing, or `npm.cmd run build` followed by `npm.cmd run preview` to preview the production version.
-
-## Portfolio Structure
+## Portfolio Sections
 
 The website includes:
 
@@ -129,4 +51,4 @@ The website includes:
 - Professional Development Plan;
 - Contact.
 
-Each section is designed to connect four elements: evidence, reflection, competency, and professional growth.
+The portfolio is designed to connect evidence, reflection, competency, and professional growth.

@@ -8,21 +8,454 @@
       content="Professional e-portfolio for Vincent Daher, mathematics teacher, trainer, and M1 student."
     />
     <title>Vincent Daher | Professional E-Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="root">
-      <main style="max-width: 760px; margin: 80px auto; padding: 24px; font-family: Arial, sans-serif; color: #10233f; line-height: 1.6;">
-        <h1 style="margin: 0 0 12px;">Vincent Daher E-Portfolio</h1>
-        <p>
-          This source file is for the React/Vite development server. If you opened it by double-clicking,
-          the app will not load because the browser cannot compile the React source files directly.
-        </p>
-        <p>
-          To view the website locally, run <strong>npm.cmd run dev</strong> and open the local URL shown by Vite.
-          For the deployable version, run <strong>npm.cmd run build</strong> and publish the <strong>docs</strong> folder.
-        </p>
-      </main>
-    </div>
-    <script type="module" src="/src/main.jsx"></script>
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="navbar__brand" href="#home">
+        <span>VD</span>
+        <strong>Vincent Daher</strong>
+      </a>
+      <button class="navbar__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="navbar__links">
+        <a href="#about">About</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href="#stage">Stage</a>
+        <a href="#journal">Journal</a>
+        <a href="#analysis">Analysis</a>
+        <a href="#artefacts">Artefacts</a>
+        <a href="#resources">Resources</a>
+        <a href="#research">Research</a>
+        <a href="#training">Training</a>
+        <a href="#development">Plan</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+
+    <main>
+      <header class="hero" id="home">
+        <div class="container hero__content">
+          <p class="eyebrow">Professional e-portfolio</p>
+          <h1>Vincent Daher</h1>
+          <p class="hero__subtitle">
+            Mathematics teacher, trainer, reflective practitioner, and M1 student building a long-term
+            professional journey in mathematics education.
+          </p>
+          <p class="hero__mission">
+            This portfolio documents the M1 observation stage while connecting evidence, reflection,
+            competencies, and professional growth.
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="#stage">Explore stage portfolio</a>
+            <a class="button button--secondary" href="#philosophy">Teaching philosophy</a>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="formula-card formula-card--one">reasoning</div>
+          <div class="formula-card formula-card--two">evidence</div>
+          <div class="formula-card formula-card--three">growth</div>
+        </div>
+      </header>
+
+      <section class="section section--compact">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Portfolio map</p>
+            <h2>A structured professional learning journey</h2>
+            <p>
+              Each section connects what was observed, what was understood, which competency developed,
+              and how future practice can improve.
+            </p>
+          </div>
+          <div class="grid grid--four">
+            <a class="quick-card" href="#stage">
+              <span>01</span>
+              <h3>M1 stage evidence</h3>
+              <p>Observation context, professional questions, journal entries, and artefacts.</p>
+            </a>
+            <a class="quick-card" href="#analysis">
+              <span>02</span>
+              <h3>Didactic reflection</h3>
+              <p>Analysis using concepts from mathematics education and classroom practice.</p>
+            </a>
+            <a class="quick-card" href="#philosophy">
+              <span>03</span>
+              <h3>Teaching identity</h3>
+              <p>A reflective vision of mathematics teaching centered on reasoning.</p>
+            </a>
+            <a class="quick-card" href="#development">
+              <span>04</span>
+              <h3>Future growth</h3>
+              <p>Strengths, areas for improvement, evidence of progress, and action plan.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="container section__split">
+          <div>
+            <div class="section-title">
+              <p class="eyebrow">About me</p>
+              <h2>A mathematics educator with an academic and formative identity</h2>
+              <p>
+                Vincent's profile brings together classroom practice, observation, youth education,
+                training, and a growing interest in research in mathematics education.
+              </p>
+            </div>
+            <aside class="reflection-box">
+              <span>Reflective note</span>
+              <h3>Professional identity</h3>
+              <p>
+                The portfolio presents teaching as a reflective practice: decisions are observed,
+                analyzed, connected to concepts from didactics, and transformed into concrete goals.
+              </p>
+            </aside>
+          </div>
+          <div class="profile-grid">
+            <article class="card">
+              <span class="tag">M1 student</span>
+              <h3>Academic background</h3>
+              <ul class="check-list">
+                <li>Master 1 pathway connected to mathematics education.</li>
+                <li>Interest in didactics, learning processes, and reflective practice.</li>
+                <li>Stage portfolio prepared for university presentation.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <span class="tag">Mathematics</span>
+              <h3>Teaching experience</h3>
+              <ul class="check-list">
+                <li>Experience supporting learners in mathematics.</li>
+                <li>Focus on reasoning, problem solving, and conceptual clarity.</li>
+                <li>Attention to student misconceptions and learning obstacles.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <span class="tag">Youth educator</span>
+              <h3>Training experience</h3>
+              <ul class="check-list">
+                <li>Workshops on study methods and exam preparation.</li>
+                <li>Support for learner autonomy and motivation.</li>
+                <li>Training experiences connected to Alphaducation projects.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <span class="tag">Growth</span>
+              <h3>Long-term goals</h3>
+              <ul class="check-list">
+                <li>Develop classroom management and lesson design.</li>
+                <li>Build research-informed mathematics teaching practices.</li>
+                <li>Create a sustainable professional e-portfolio over time.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tint" id="philosophy">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Teaching philosophy</p>
+            <h2>Mathematics as reasoning, language, and interaction</h2>
+            <p>
+              This vision emphasizes student activity, meaningful errors, guided institutionalization,
+              and assessment that helps learning move forward.
+            </p>
+          </div>
+          <div class="grid grid--three">
+            <article class="competency-card">
+              <h3>Mathematics as reasoning</h3>
+              <dl>
+                <div><dt>Evidence</dt><dd>Student work can reveal whether learners justify and connect ideas.</dd></div>
+                <div><dt>Reflection</dt><dd>Procedures become meaningful when they are linked to reasons.</dd></div>
+                <div><dt>Growth</dt><dd>Design lessons that ask students to compare, argue, and explain.</dd></div>
+              </dl>
+            </article>
+            <article class="competency-card">
+              <h3>Errors as indicators</h3>
+              <dl>
+                <div><dt>Evidence</dt><dd>Mistakes reveal conceptual, linguistic, or procedural obstacles.</dd></div>
+                <div><dt>Reflection</dt><dd>An error is information about how a student is thinking.</dd></div>
+                <div><dt>Growth</dt><dd>Use error analysis to plan feedback and remediation.</dd></div>
+              </dl>
+            </article>
+            <article class="competency-card">
+              <h3>Student as active learner</h3>
+              <dl>
+                <div><dt>Evidence</dt><dd>Observation notes record questions, attempts, interactions, and strategies.</dd></div>
+                <div><dt>Reflection</dt><dd>Learning requires intellectual activity, not only reception.</dd></div>
+                <div><dt>Growth</dt><dd>Build situations where students test, conjecture, and represent.</dd></div>
+              </dl>
+            </article>
+            <article class="competency-card">
+              <h3>Teacher as mediator</h3>
+              <dl>
+                <div><dt>Evidence</dt><dd>Teacher actions include questions, reformulations, and examples.</dd></div>
+                <div><dt>Reflection</dt><dd>The teacher guides students from informal strategies to formal knowledge.</dd></div>
+                <div><dt>Growth</dt><dd>Improve transitions between exploration and formalization.</dd></div>
+              </dl>
+            </article>
+            <article class="competency-card">
+              <h3>Assessment for learning</h3>
+              <dl>
+                <div><dt>Evidence</dt><dd>Feedback, rubrics, and short checks document progress.</dd></div>
+                <div><dt>Reflection</dt><dd>Assessment should support improvement, not only classify performance.</dd></div>
+                <div><dt>Growth</dt><dd>Create formative tools that make expectations clear.</dd></div>
+              </dl>
+            </article>
+            <article class="competency-card">
+              <h3>Interaction as central</h3>
+              <dl>
+                <div><dt>Evidence</dt><dd>Dialogue and peer explanation reveal how meaning is negotiated.</dd></div>
+                <div><dt>Reflection</dt><dd>Understanding often develops through language and social interaction.</dd></div>
+                <div><dt>Growth</dt><dd>Plan discussion, comparison of methods, and collective validation.</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="stage">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">M1 stage portfolio</p>
+            <h2>Observation stage as a foundation for professional growth</h2>
+            <p>
+              The M1 stage section is organized around observation, didactic analysis, artefacts,
+              and reflection. It can be expanded later with final dates and institutional documents.
+            </p>
+          </div>
+          <div class="stage-panel">
+            <div>
+              <p class="stage-panel__label">Stage context</p>
+              <h3>Observation stage in mathematics education</h3>
+              <p>
+                Placeholder for the school context, observed class levels, mathematical topics,
+                supervising teacher, and institutional expectations of the M1 stage.
+              </p>
+            </div>
+            <div class="stage-panel__list">
+              <span>Type: observation</span>
+              <span>Focus: classroom interaction</span>
+              <span>Evidence: notes, grids, artefacts</span>
+              <span>Goal: link theory and practice</span>
+            </div>
+          </div>
+          <div class="grid grid--four">
+            <a class="path-card" href="#journal">Observation journal</a>
+            <a class="path-card" href="#analysis">Didactic analysis</a>
+            <a class="path-card" href="#artefacts">Evidence and artefacts</a>
+            <a class="path-card" href="#development">Professional plan</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tint" id="journal">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Observation journal</p>
+            <h2>From classroom events to professional questions</h2>
+            <p>These sample entries model the expected structure for stage observations.</p>
+          </div>
+          <div class="timeline">
+            <article class="timeline__item">
+              <div class="timeline__date">Observation 1</div>
+              <div class="timeline__content">
+                <span class="tag">Class level placeholder</span>
+                <h3>Introduction of a new mathematical concept</h3>
+                <dl>
+                  <div><dt>Teaching situation</dt><dd>The teacher introduced a topic through examples before formal definition.</dd></div>
+                  <div><dt>Student reactions</dt><dd>Some students followed examples quickly, while others waited for the rule.</dd></div>
+                  <div><dt>Teacher actions</dt><dd>The teacher used questions, board organization, and reformulation.</dd></div>
+                  <div><dt>Personal analysis</dt><dd>The situation shows the importance of connecting examples to institutionalized knowledge.</dd></div>
+                  <div><dt>What was learned</dt><dd>A concept becomes clearer when intuition and formal statement are connected.</dd></div>
+                  <div><dt>Future application</dt><dd>Prepare examples that reveal structure before naming the rule.</dd></div>
+                </dl>
+              </div>
+            </article>
+            <article class="timeline__item">
+              <div class="timeline__date">Observation 2</div>
+              <div class="timeline__content">
+                <span class="tag">Class level placeholder</span>
+                <h3>Student errors during problem solving</h3>
+                <dl>
+                  <div><dt>Teaching situation</dt><dd>Students worked individually on a problem requiring method choice.</dd></div>
+                  <div><dt>Student reactions</dt><dd>Several students made similar errors, suggesting a shared obstacle.</dd></div>
+                  <div><dt>Teacher actions</dt><dd>The teacher selected one error for discussion and comparison.</dd></div>
+                  <div><dt>Personal analysis</dt><dd>The error became a didactic resource because it made a misconception visible.</dd></div>
+                  <div><dt>What was learned</dt><dd>Common errors can guide precise teacher intervention.</dd></div>
+                  <div><dt>Future application</dt><dd>Collect recurring errors and design short formative activities.</dd></div>
+                </dl>
+              </div>
+            </article>
+            <article class="timeline__item">
+              <div class="timeline__date">Observation 3</div>
+              <div class="timeline__content">
+                <span class="tag">Class level placeholder</span>
+                <h3>Classroom interaction and participation</h3>
+                <dl>
+                  <div><dt>Teaching situation</dt><dd>A whole-class correction created opportunities for explanation.</dd></div>
+                  <div><dt>Student reactions</dt><dd>Participation increased when students could complete partial steps.</dd></div>
+                  <div><dt>Teacher actions</dt><dd>The teacher balanced correction, encouragement, and precision.</dd></div>
+                  <div><dt>Personal analysis</dt><dd>Classroom management and didactic choices worked together.</dd></div>
+                  <div><dt>What was learned</dt><dd>Participation is supported by clear expectations and accessible entry points.</dd></div>
+                  <div><dt>Future application</dt><dd>Plan differentiated prompts so more students can contribute.</dd></div>
+                </dl>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="analysis">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Didactic analysis</p>
+            <h2>Conceptual tools for interpreting mathematics teaching</h2>
+            <p>Each concept connects an academic lens to observed classroom practice and future decisions.</p>
+          </div>
+          <div class="grid grid--three">
+            <article class="card"><span class="tag">Teacher - student - knowledge</span><h3>Triangle didactique</h3><p>The triangle didactique studies relationships between teacher, student, and mathematical knowledge.</p><p class="card__muted">Observation notes can identify whether explanation, student activity, or formalization dominated a moment.</p><strong>Future lessons should balance guidance with student engagement in the knowledge itself.</strong></article>
+            <article class="card"><span class="tag">Expectations</span><h3>Contrat didactique</h3><p>The contrat didactique refers to implicit expectations between teacher and students.</p><p class="card__muted">Students may wait for teacher confirmation if the classroom contract encourages dependence.</p><strong>A stronger contract can invite students to justify, test, and correct reasoning.</strong></article>
+            <article class="card"><span class="tag">Knowledge transformation</span><h3>Transposition didactique</h3><p>Transposition didactique studies how scholarly knowledge becomes teachable school knowledge.</p><p class="card__muted">Definitions, exercises, and examples simplify or reorganize mathematical knowledge.</p><strong>Lesson design should protect mathematical meaning while making content accessible.</strong></article>
+            <article class="card"><span class="tag">Learning indicators</span><h3>Errors and obstacles</h3><p>Errors may reveal epistemological, didactic, or cognitive obstacles.</p><p class="card__muted">Repeated mistakes in a class can become evidence for targeted analysis.</p><strong>The teacher can transform error correction into conceptual learning.</strong></article>
+            <article class="card"><span class="tag">Problem situations</span><h3>Situations-problemes</h3><p>A situation-probleme places students in a meaningful challenge that creates a need for new knowledge.</p><p class="card__muted">Observation can examine whether a problem creates intellectual activity.</p><strong>Tasks should give students a reason to construct or adapt a strategy.</strong></article>
+            <article class="card"><span class="tag">Formalization</span><h3>Institutionalization</h3><p>Institutionalization names, stabilizes, and recognizes knowledge as mathematical.</p><p class="card__muted">Teachers move from examples or student strategies to formal statements and accepted methods.</p><strong>Clear institutionalization helps students know what must be retained and reused.</strong></article>
+            <article class="card"><span class="tag">Learning conditions</span><h3>Classroom management</h3><p>Management supports the conditions that allow mathematical work to happen.</p><p class="card__muted">Routines, pacing, transitions, and attention signals affect engagement.</p><strong>Management should serve learning goals and didactic choices.</strong></article>
+            <article class="card"><span class="tag">Participation</span><h3>Student engagement</h3><p>Engagement includes attention, effort, participation, and intellectual investment.</p><p class="card__muted">Observation can track which tasks generate meaningful participation.</p><strong>Engagement improves when tasks are accessible, purposeful, and demanding.</strong></article>
+            <article class="card"><span class="tag">Feedback</span><h3>Formative assessment</h3><p>Formative assessment gathers information during learning to support progress.</p><p class="card__muted">Short checks, questioning, and feedback reveal understanding before final assessment.</p><strong>Assessment should guide both student improvement and teacher planning.</strong></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tint" id="artefacts">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Evidence and artefacts</p>
+            <h2>Evidence explained through reflection and competencies</h2>
+            <p>Artefacts are connected to a competency and a professional learning goal.</p>
+          </div>
+          <div class="grid grid--three">
+            <article class="artefact-card"><span class="tag">Stage evidence</span><h3>Observation grid</h3><p>A structured grid for recording teacher actions, student reactions, classroom interaction, and mathematical content.</p><div class="artefact-card__meta"><strong>Competency demonstrated</strong><span>Observe professional situations with precision.</span></div><div class="artefact-card__meta"><strong>Reflection</strong><span>The grid helps transform impressions into analyzable evidence.</span></div><a href="#contact">File placeholder</a></article>
+            <article class="artefact-card"><span class="tag">Didactic artefact</span><h3>Student error analysis</h3><p>A sample analysis of recurring student errors connected to obstacles and remediation choices.</p><div class="artefact-card__meta"><strong>Competency demonstrated</strong><span>Interpret student productions using didactic concepts.</span></div><div class="artefact-card__meta"><strong>Reflection</strong><span>Errors become useful when they guide feedback and future lesson design.</span></div><a href="#contact">File placeholder</a></article>
+            <article class="artefact-card"><span class="tag">Teaching material</span><h3>Lesson plan template</h3><p>A reusable lesson structure including objectives, prerequisites, tasks, difficulties, and assessment moments.</p><div class="artefact-card__meta"><strong>Competency demonstrated</strong><span>Design coherent mathematics lessons.</span></div><div class="artefact-card__meta"><strong>Reflection</strong><span>Planning improves when objectives, tasks, and assessment are aligned.</span></div><a href="#contact">File placeholder</a></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="resources">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Teaching resources</p>
+            <h2>Materials for learning, assessment, and support</h2>
+            <p>This section can host downloadable files, classroom tools, exercises, and resources created for students.</p>
+          </div>
+          <div class="resource-list">
+            <article class="card"><span class="tag">Practice</span><h3>Mathematics exercises</h3><p>Exercises organized by concept, level, prerequisites, and learning objective.</p></article>
+            <article class="card"><span class="tag">Planning</span><h3>Lesson plans</h3><p>Editable plans that connect objectives, tasks, anticipated difficulties, and assessment.</p></article>
+            <article class="card"><span class="tag">Feedback</span><h3>Assessment tools</h3><p>Rubrics, quick checks, diagnostic tasks, and correction formats for formative use.</p></article>
+            <article class="card"><span class="tag">Learning strategies</span><h3>Study methods</h3><p>Resources for note-taking, revision planning, exam preparation, and autonomous learning.</p></article>
+            <article class="card"><span class="tag">Differentiation</span><h3>Student support</h3><p>Scaffolds, reminders, worked examples, and remediation tasks for diverse learner needs.</p></article>
+            <article class="card"><span class="tag">Organization</span><h3>Classroom tools</h3><p>Observation grids, participation routines, board structures, and group-work supports.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tint" id="research">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Research notes</p>
+            <h2>Bridging classroom practice and mathematics education research</h2>
+            <p>The cards below can be expanded into an academic reading journal.</p>
+          </div>
+          <div class="grid grid--four">
+            <article class="research-card"><h3>Brousseau</h3><p>Theory of Didactical Situations.</p><span>How problem situations create a need for knowledge.</span></article>
+            <article class="research-card"><h3>Chevallard</h3><p>Didactic transposition.</p><span>How mathematical knowledge is transformed for teaching.</span></article>
+            <article class="research-card"><h3>Duval</h3><p>Semiotic representations.</p><span>How students move between graphs, symbols, diagrams, and language.</span></article>
+            <article class="research-card"><h3>Bachelard</h3><p>Epistemological obstacles.</p><span>How previous ways of thinking can block new understanding.</span></article>
+            <article class="research-card"><h3>Piaget</h3><p>Constructivism.</p><span>How learners build knowledge through activity.</span></article>
+            <article class="research-card"><h3>Vygotsky</h3><p>Social learning.</p><span>How interaction and mediation support development.</span></article>
+            <article class="research-card"><h3>Formative assessment</h3><p>Assessment that guides learning.</p><span>How feedback supports progress before final evaluation.</span></article>
+            <article class="research-card"><h3>Proof and reasoning</h3><p>Mathematical argumentation.</p><span>How students learn to justify and communicate ideas.</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="training">
+        <div class="container section__split section__split--reverse">
+          <div>
+            <div class="section-title">
+              <p class="eyebrow">Training and workshops</p>
+              <h2>A professional trainer identity connected to education</h2>
+              <p>
+                This section presents youth training, learning strategies, mathematics workshops,
+                and Alphaducation projects in a professional and non-commercial way.
+              </p>
+            </div>
+            <aside class="reflection-box">
+              <span>Reflective note</span>
+              <h3>Alphaducation</h3>
+              <p>
+                Alphaducation can be presented as an educational training and tutoring project focused on
+                study methods, mathematics support, exam preparation, and learner autonomy.
+              </p>
+            </aside>
+          </div>
+          <div class="grid grid--two">
+            <article class="card"><span class="tag">Education</span><h3>Youth training</h3><p>Training experiences focused on learner confidence, communication, and responsibility.</p></article>
+            <article class="card"><span class="tag">Methods</span><h3>Learning strategies</h3><p>Workshops helping students organize work, revise effectively, and monitor progress.</p></article>
+            <article class="card"><span class="tag">Support</span><h3>Exam preparation</h3><p>Structured preparation combining content review, practice, planning, and stress management.</p></article>
+            <article class="card"><span class="tag">Digital literacy</span><h3>AI for studying</h3><p>Responsible use of AI tools for explanation, practice, feedback, and organization.</p></article>
+            <article class="card"><span class="tag">Formation</span><h3>Leadership and soft skills</h3><p>Activities that support communication, teamwork, initiative, and self-reflection.</p></article>
+            <article class="card"><span class="tag">Alphaducation</span><h3>Mathematics workshops</h3><p>Workshops designed to strengthen reasoning, problem-solving habits, and learner autonomy.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tint" id="development">
+        <div class="container">
+          <div class="section-title">
+            <p class="eyebrow">Professional development plan</p>
+            <h2>Turning reflection into action</h2>
+            <p>The development plan shows how observed evidence becomes a concrete path for growth.</p>
+          </div>
+          <div class="grid grid--three">
+            <article class="competency-card"><h3>Current strengths</h3><dl><div><dt>Evidence</dt><dd>Tutoring, training, mathematics support, and reflective stage observation.</dd></div><div><dt>Reflection</dt><dd>These experiences connect practice with student needs.</dd></div><div><dt>Growth</dt><dd>Continue documenting concrete examples of these strengths.</dd></div></dl></article>
+            <article class="competency-card"><h3>Areas to improve</h3><dl><div><dt>Evidence</dt><dd>Observation notes can identify challenges in pacing, management, and assessment.</dd></div><div><dt>Reflection</dt><dd>Improvement becomes possible when each difficulty is connected to action.</dd></div><div><dt>Growth</dt><dd>Choose one priority per period and collect evidence of progress.</dd></div></dl></article>
+            <article class="competency-card"><h3>Future goals</h3><dl><div><dt>Evidence</dt><dd>Research notes and stage analysis show interest in mathematics education.</dd></div><div><dt>Reflection</dt><dd>Long-term identity includes teaching, training, and possible research.</dd></div><div><dt>Growth</dt><dd>Develop a research-informed portfolio for academic and professional opportunities.</dd></div></dl></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--contact" id="contact">
+        <div class="container contact">
+          <div class="section-title">
+            <p class="eyebrow">Contact</p>
+            <h2>Professional contact</h2>
+            <p>Replace these placeholders when final contact details are ready.</p>
+          </div>
+          <div class="contact__links">
+            <a href="mailto:vincent.daher@example.com">Email placeholder</a>
+            <a href="https://www.linkedin.com/">LinkedIn placeholder</a>
+            <a href="https://github.com/">GitHub placeholder</a>
+            <a href="#contact">Download CV placeholder</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <p>Vincent Daher | Professional e-portfolio</p>
+        <p>Evidence, reflection, competency, and professional growth.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
   </body>
 </html>
