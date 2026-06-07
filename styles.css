@@ -141,8 +141,6 @@ button {
   background:
     linear-gradient(rgba(7, 20, 38, 0.72), rgba(7, 20, 38, 0.82)),
     url("assets/images/math_bg.jpg"),
-    url("assets/images/math_bg.png"),
-    url("assets/images/math_bg.webp"),
     linear-gradient(140deg, var(--navy-strong), var(--blue));
   background-position: center;
   background-size: cover;
