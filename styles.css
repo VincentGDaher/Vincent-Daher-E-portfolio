@@ -418,6 +418,10 @@ button {
   object-fit: cover;
 }
 
+.course-library {
+  margin-top: 54px;
+}
+
 .section-title h2 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3.25rem);
@@ -808,6 +812,25 @@ button {
 
 .research-card {
   min-height: 210px;
+}
+
+.viewer-card {
+  padding: 22px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.viewer-card iframe {
+  display: block;
+  width: 100%;
+  height: min(72vh, 720px);
+  min-height: 520px;
+  margin-top: 16px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--gray-100);
 }
 
 .research-card span {

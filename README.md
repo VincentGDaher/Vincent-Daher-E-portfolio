@@ -45,6 +45,11 @@ For course documents:
 1. Put PDFs or documents in `files/courses/`.
 2. Update the links in `school.html`.
 
+The current course viewers use:
+
+- `files/courses/coure_eb6.pdf`;
+- `files/courses/cours_eb7.pdf`.
+
 For the rapport de stage:
 
 1. Put the PDF in `files/stage/`.
@@ -61,6 +66,14 @@ For the Master 2 thesis:
 
 1. Put the thesis file in `files/thesis/`.
 2. Update the thesis link in `about.html`.
+
+The current thesis link uses:
+
+- `files/thesis/these_vincent (1).pdf`.
+
+The current CV link uses:
+
+- `files/cv/CV_Vincent_Daher.pdf`.
 
 For imported HTML projects:
 
