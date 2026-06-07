@@ -83,7 +83,7 @@ src/styles/global.css
 
 The project is prepared for GitHub Pages with:
 
-- the build script in `package.json`, using the repository base path `/Vincent-Daher-E-portfolio/`;
+- the build script in `package.json`, using relative asset paths so the built site works on GitHub Pages and in local previews;
 - `.github/workflows/deploy.yml`, which builds and deploys the site automatically.
 
 To deploy:
@@ -93,7 +93,7 @@ To deploy:
 3. Set the source to **GitHub Actions**.
 4. Push changes to `main`; the workflow will build and publish the site.
 
-If the repository name changes, update the `--base` value in the `build` script in `package.json`.
+The source `index.html` in the project root should be opened through Vite, not directly in the browser. Use `npm.cmd run dev` for local editing, or `npm.cmd run build` followed by `npm.cmd run preview` to preview the production version.
 
 ## Portfolio Structure
 
