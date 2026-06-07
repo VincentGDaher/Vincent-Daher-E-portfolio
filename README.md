@@ -28,6 +28,8 @@ npm.cmd run dev
 
 Vite will print a local URL, usually `http://localhost:5173/`.
 
+Do not open the root `index.html` by double-clicking it. That file is a development entry point and needs Vite to compile the React app.
+
 ## Build
 
 ```bash
@@ -40,7 +42,15 @@ PowerShell alternative:
 npm.cmd run build
 ```
 
-The production files are generated in `dist/`.
+The production files are generated in `docs/`.
+
+To preview the production version locally, run:
+
+```bash
+npm.cmd run preview
+```
+
+Then open the URL printed by Vite. Opening `docs/index.html` directly by double-clicking can still show a blank page in some browsers because modern JavaScript modules are blocked or restricted from `file://` pages.
 
 ## Edit Content
 
@@ -84,14 +94,21 @@ src/styles/global.css
 The project is prepared for GitHub Pages with:
 
 - the build script in `package.json`, using relative asset paths so the built site works on GitHub Pages and in local previews;
-- `.github/workflows/deploy.yml`, which builds and deploys the site automatically.
+- `.github/workflows/deploy.yml`, which builds and deploys the `docs/` folder automatically.
 
-To deploy:
+Recommended deployment with GitHub Actions:
 
 1. Push the project to the `main` branch on GitHub.
 2. In the GitHub repository, go to **Settings > Pages**.
 3. Set the source to **GitHub Actions**.
 4. Push changes to `main`; the workflow will build and publish the site.
+
+Alternative deployment from a branch:
+
+1. Run `npm.cmd run build`.
+2. Commit and push the generated `docs/` folder.
+3. In **Settings > Pages**, choose **Deploy from a branch**.
+4. Select branch `main` and folder `/docs`.
 
 The source `index.html` in the project root should be opened through Vite, not directly in the browser. Use `npm.cmd run dev` for local editing, or `npm.cmd run build` followed by `npm.cmd run preview` to preview the production version.
 
