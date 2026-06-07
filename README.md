@@ -105,6 +105,12 @@ For the home page mathematics background:
 2. Name it `math_bg.jpg`, `math_bg.png`, or `math_bg.webp`.
 3. The home hero background will use it automatically.
 
+For the Alphaducation logo:
+
+1. Save the logo in `assets/images/`.
+2. The current logo file is `assets/images/alphalogo.png`.
+3. It appears on `alphaducation.html`.
+
 ## Academic Context
 
 The portfolio currently uses this academic information:
