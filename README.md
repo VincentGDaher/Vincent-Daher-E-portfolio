@@ -16,6 +16,7 @@ This is a classical static multi-page website for Vincent Daher. It does not nee
 - `files/courses/` is for course files.
 - `files/stage/` is for rapport de stage and stage documents.
 - `projects/` is for imported HTML projects.
+- `assets/images/` is for logos, photos, and visual assets.
 
 ## How To View Locally
 
@@ -53,6 +54,22 @@ For imported HTML projects:
 1. Create a folder inside `projects/`.
 2. Place the project files there.
 3. Link to the project from `projects.html`.
+
+For the university logo:
+
+1. Save the real logo image in `assets/images/`.
+2. The current logo file is `assets/images/Logo-FacultyofPedagogy.jpg`.
+3. If the file name changes, update the image path in `index.html`, `about.html`, and `stage.html`.
+
+## Academic Context
+
+The portfolio currently uses this academic information:
+
+- University: Lebanese University;
+- Faculty/Department: Faculty of Pedagogy - Deanery;
+- Program: Master 1 in Mathematical Education;
+- Academic year: 2025-2026;
+- Stage type: Observation stage.
 
 ## How To Deploy On GitHub Pages
 
