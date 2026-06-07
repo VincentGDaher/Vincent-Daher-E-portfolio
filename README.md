@@ -61,6 +61,12 @@ For the university logo:
 2. The current logo file is `assets/images/Logo-FacultyofPedagogy.jpg`.
 3. If the file name changes, update the image path in `index.html`, `about.html`, and `stage.html`.
 
+For the profile photo:
+
+1. Save the image in `assets/images/`.
+2. Name it `profile-photo.jpg`.
+3. It will appear beside the heading on `about.html`.
+
 For the home page mathematics background:
 
 1. Save the image in `assets/images/`.
