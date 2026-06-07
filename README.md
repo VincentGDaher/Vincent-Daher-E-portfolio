@@ -15,6 +15,7 @@ This is a classical static multi-page website for Vincent Daher. It does not nee
 - `files/cv/` is for CV files.
 - `files/courses/` is for course files.
 - `files/stage/` is for rapport de stage and stage documents.
+- `files/thesis/` is for thesis files.
 - `projects/` is for imported HTML projects.
 - `assets/images/` is for logos, photos, and visual assets.
 
@@ -49,6 +50,18 @@ For the rapport de stage:
 1. Put the PDF in `files/stage/`.
 2. Update the link in `stage.html`.
 
+The current stage page links to:
+
+- `files/stage/rapport_stage_1_vincent_daher.docx`;
+- `files/stage/rapport_stage_2_vincent_daher.docx`;
+- `files/stage/rapport_stage_3_vincent_daher.docx`;
+- `files/stage/rapport_stage_4_vincent_daher.docx`.
+
+For the Master 2 thesis:
+
+1. Put the thesis file in `files/thesis/`.
+2. Update the thesis link in `about.html`.
+
 For imported HTML projects:
 
 1. Create a folder inside `projects/`.
@@ -64,7 +77,7 @@ For the university logo:
 For the profile photo:
 
 1. Save the image in `assets/images/`.
-2. Name it `profile-photo.jpg`.
+2. The current image is `assets/images/me.png`.
 3. It will appear beside the heading on `about.html`.
 
 For the home page mathematics background:
