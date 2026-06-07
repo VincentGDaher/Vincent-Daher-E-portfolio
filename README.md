@@ -61,6 +61,12 @@ For the university logo:
 2. The current logo file is `assets/images/Logo-FacultyofPedagogy.jpg`.
 3. If the file name changes, update the image path in `index.html`, `about.html`, and `stage.html`.
 
+For the home page mathematics background:
+
+1. Save the image in `assets/images/`.
+2. Name it `math_bg.jpg`, `math_bg.png`, or `math_bg.webp`.
+3. The home hero background will use it automatically.
+
 ## Academic Context
 
 The portfolio currently uses this academic information:
