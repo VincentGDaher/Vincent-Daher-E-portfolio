@@ -1,12 +1,21 @@
 # Vincent Daher Professional E-Portfolio
 
-This is a classical static website for Vincent Daher. It does not need React, Vite, npm, or a build step.
+This is a classical static multi-page website for Vincent Daher. It does not need React, Vite, npm, or a build step.
 
 ## Files
 
-- `index.html` contains the page content and structure.
+- `index.html` is the navigation hub.
+- `about.html` introduces Vincent as a teacher and links to CV, LinkedIn, GitHub, and email.
+- `school.html` presents the school context, courses, and current educational projects.
+- `stage.html` contains the M1 stage portfolio and rapport de stage placeholder.
+- `projects.html` links to imported mathematics HTML projects and other digital projects.
+- `alphaducation.html` presents Alphaducation, current work, website, Instagram, workshops, and tutoring.
 - `styles.css` contains the visual design and responsive layout.
 - `script.js` contains the small mobile navigation interaction.
+- `files/cv/` is for CV files.
+- `files/courses/` is for course files.
+- `files/stage/` is for rapport de stage and stage documents.
+- `projects/` is for imported HTML projects.
 
 ## How To View Locally
 
@@ -18,9 +27,32 @@ You can double-click it from the folder, or right-click and choose **Open with**
 
 Edit:
 
-- `index.html` for text, sections, links, and placeholders;
+- any `.html` page for text, sections, links, and placeholders;
 - `styles.css` for colors, spacing, typography, and responsive design;
 - `script.js` only if you want to change the mobile menu behavior.
+
+## How To Add Files
+
+For a CV:
+
+1. Put the PDF in `files/cv/`.
+2. Update the link in `about.html`.
+
+For course documents:
+
+1. Put PDFs or documents in `files/courses/`.
+2. Update the links in `school.html`.
+
+For the rapport de stage:
+
+1. Put the PDF in `files/stage/`.
+2. Update the link in `stage.html`.
+
+For imported HTML projects:
+
+1. Create a folder inside `projects/`.
+2. Place the project files there.
+3. Link to the project from `projects.html`.
 
 ## How To Deploy On GitHub Pages
 
@@ -36,19 +68,13 @@ GitHub Pages will serve the root `index.html` directly.
 
 ## Portfolio Sections
 
-The website includes:
+The website includes these main pages:
 
-- Home;
-- About Me;
-- Teaching Philosophy;
-- M1 Stage Portfolio;
-- Observation Journal;
-- Didactic Analysis;
-- Evidence and Artefacts;
-- Teaching Resources;
-- Research Notes;
-- Training and Workshops;
-- Professional Development Plan;
-- Contact.
+- Navigation page;
+- Teacher Profile;
+- School & Courses;
+- Stage Portfolio;
+- Projects;
+- Alphaducation.
 
 The portfolio is designed to connect evidence, reflection, competency, and professional growth.

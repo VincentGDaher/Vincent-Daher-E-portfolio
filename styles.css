@@ -98,6 +98,11 @@ button {
   background: var(--teal-soft);
 }
 
+.navbar__links a[aria-current="page"] {
+  color: var(--navy);
+  background: var(--teal-soft);
+}
+
 .navbar__toggle {
   display: none;
   width: 42px;
@@ -201,6 +206,39 @@ button {
   pointer-events: none;
 }
 
+.hub-hero {
+  min-height: 74vh;
+}
+
+.page-hero {
+  padding: 86px 0;
+  color: var(--white);
+  background:
+    linear-gradient(rgba(7, 20, 38, 0.78), rgba(7, 20, 38, 0.82)),
+    linear-gradient(135deg, var(--navy-strong), var(--blue));
+}
+
+.alphaducation-hero {
+  background:
+    linear-gradient(rgba(7, 20, 38, 0.74), rgba(7, 20, 38, 0.82)),
+    radial-gradient(circle at 82% 22%, rgba(242, 140, 40, 0.42), transparent 32%),
+    linear-gradient(135deg, var(--navy-strong), var(--teal));
+}
+
+.page-hero h1 {
+  max-width: 860px;
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1;
+}
+
+.page-hero p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.2rem;
+}
+
 .formula-card {
   position: absolute;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -295,10 +333,12 @@ button {
 }
 
 .quick-card,
+.navigation-card,
 .path-card,
 .card,
 .competency-card,
 .artefact-card,
+.project-card,
 .research-card,
 .timeline__content,
 .reflection-box,
@@ -313,6 +353,45 @@ button {
   min-height: 214px;
   padding: 22px;
   transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.navigation-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.navigation-card {
+  grid-column: span 2;
+  min-height: 260px;
+  padding: 26px;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.navigation-card--primary,
+.navigation-card--accent {
+  grid-column: span 3;
+}
+
+.navigation-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(21, 143, 146, 0.45);
+}
+
+.navigation-card--accent:hover {
+  border-color: rgba(242, 140, 40, 0.64);
+}
+
+.navigation-card span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--teal);
+  background: var(--teal-soft);
+  font-weight: 900;
 }
 
 .quick-card:hover {
@@ -333,9 +412,11 @@ button {
 }
 
 .quick-card h3,
+.navigation-card h3,
 .card h3,
 .competency-card h3,
 .artefact-card h3,
+.project-card h3,
 .research-card h3,
 .timeline__content h3,
 .reflection-box h3,
@@ -346,9 +427,11 @@ button {
 }
 
 .quick-card p,
+.navigation-card p,
 .card p,
 .competency-card dd,
 .artefact-card p,
+.project-card p,
 .research-card p,
 .timeline__content dd,
 .reflection-box p,
@@ -366,6 +449,7 @@ button {
 .card,
 .competency-card,
 .artefact-card,
+.project-card,
 .research-card {
   padding: 22px;
 }
@@ -555,6 +639,24 @@ button {
   font-weight: 900;
 }
 
+.text-link {
+  display: inline-flex;
+  margin-top: 16px;
+  color: var(--teal);
+  font-weight: 900;
+}
+
+.link-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.link-list a {
+  color: var(--teal);
+  font-weight: 800;
+}
+
 .resource-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -619,8 +721,15 @@ button {
 @media (max-width: 1060px) {
   .grid--four,
   .grid--three,
+  .navigation-grid,
   .resource-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .navigation-card,
+  .navigation-card--primary,
+  .navigation-card--accent {
+    grid-column: auto;
   }
 
   .section__split,
@@ -696,6 +805,7 @@ button {
   .grid--four,
   .grid--three,
   .grid--two,
+  .navigation-grid,
   .resource-list,
   .stage-panel {
     grid-template-columns: 1fr;
@@ -749,9 +859,11 @@ button {
   }
 
   .quick-card,
+  .navigation-card,
   .card,
   .competency-card,
   .artefact-card,
+  .project-card,
   .research-card,
   .timeline__content,
   .reflection-box,
