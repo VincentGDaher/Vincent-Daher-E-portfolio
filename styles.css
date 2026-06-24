@@ -88,16 +88,28 @@ button {
 }
 
 .navbar__links {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex-wrap: wrap;
+  position: absolute;
+  top: 72px;
+  left: 0;
+  right: 0;
+  display: none;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  max-height: calc(100vh - 72px);
+  overflow: auto;
+  padding: 16px max(20px, calc((100vw - var(--max-width)) / 2)) 20px;
+  border-bottom: 1px solid var(--gray-200);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 45px rgba(8, 24, 45, 0.12);
+}
+
+.navbar__links.is-open {
+  display: grid;
 }
 
 .navbar__links a {
   padding: 8px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--gray-700);
   font-size: 0.9rem;
   font-weight: 700;
@@ -110,8 +122,8 @@ button {
 }
 
 .navbar__links a.nav-practicum--start {
-  margin-left: 8px;
-  box-shadow: -8px 0 0 -7px var(--gray-200);
+  margin-left: 0;
+  box-shadow: none;
 }
 
 .navbar__links a.nav-practicum:hover,
@@ -131,8 +143,8 @@ button {
   background: var(--teal-soft);
 }
 
-.navbar__toggle {
-  display: none;
+ .navbar__toggle {
+  display: block;
   width: 42px;
   height: 42px;
   border: 1px solid var(--gray-200);
@@ -223,7 +235,7 @@ button {
   min-height: 34px;
   padding: 6px 12px;
   border: 1px solid var(--gray-200);
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--navy);
   background: rgba(255, 255, 255, 0.94);
   font-size: 0.9rem;
@@ -657,7 +669,7 @@ button {
   align-items: center;
   min-height: 28px;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--blue);
   background: #e8f1fb;
   font-size: 0.78rem;
