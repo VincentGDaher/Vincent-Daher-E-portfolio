@@ -868,6 +868,40 @@ button {
   gap: 18px;
 }
 
+
+.certificate-card {
+  grid-column: 1 / -1;
+}
+
+.certificate-frame {
+  position: relative;
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--gray-100);
+}
+
+.certificate-frame img {
+  display: block;
+  width: 100%;
+  max-height: 680px;
+  object-fit: contain;
+  background: var(--white);
+}
+
+.certificate-frame.is-missing {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.certificate-frame.is-missing::after {
+  content: "TOT certificate image";
+  color: var(--gray-500);
+  font-weight: 800;
+}
 .research-card {
   min-height: 210px;
 }

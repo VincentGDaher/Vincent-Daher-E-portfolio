@@ -5,16 +5,18 @@ This is a classical static multi-page website for Vincent Daher. It does not nee
 ## Files
 
 - `index.html` is the navigation hub.
-- `about.html` introduces Vincent as a teacher and links to CV, LinkedIn, GitHub, and email.
+- `about.html` introduces Vincent as a mathematics teacher and reflective practitioner.
+- `cv.html` contains the dedicated CV section.
 - `school.html` presents the school context, courses, and current educational projects.
-- `stage.html` contains the M1 stage portfolio and rapport de stage placeholder.
-- `projects.html` links to imported mathematics HTML projects and other digital projects.
+- `practicum.html` contains Practicum 1, Practicum 2, and Practicum 3.
+- `projects.html` links to imported mathematics HTML visualizers and university projects.
+- `achievements.html` presents academic achievements, including the Master 2 thesis.
 - `alphaducation.html` presents Alphaducation, current work, website, Instagram, workshops, and tutoring.
 - `styles.css` contains the visual design and responsive layout.
 - `script.js` contains the small mobile navigation interaction.
 - `files/cv/` is for CV files.
 - `files/courses/` is for course files.
-- `files/stage/` is for rapport de stage and stage documents.
+- `files/stage/` is for practicum reports and stage documents.
 - `files/thesis/` is for thesis files.
 - `projects/` is for imported HTML projects.
 - `assets/images/` is for logos, photos, and visual assets.
@@ -25,91 +27,27 @@ Open `index.html` directly in your browser.
 
 You can double-click it from the folder, or right-click and choose **Open with** your browser.
 
-## How To Edit
+## Current Documents
 
-Edit:
+The current CV link uses:
 
-- any `.html` page for text, sections, links, and placeholders;
-- `styles.css` for colors, spacing, typography, and responsive design;
-- `script.js` only if you want to change the mobile menu behavior.
+- `files/cv/CV_Vincent_Daher.pdf`.
 
-## How To Add Files
-
-For a CV:
-
-1. Put the PDF in `files/cv/`.
-2. Update the link in `about.html`.
-
-For course documents:
-
-1. Put PDFs or documents in `files/courses/`.
-2. Update the links in `school.html`.
-
-The current course viewers use:
-
-- `files/courses/coure_eb6.pdf`;
-- `files/courses/cours_eb7.pdf`.
-
-For the rapport de stage:
-
-1. Put the PDF in `files/stage/`.
-2. Update the link in `stage.html`.
-
-The current stage page links to:
+The current Practicum 1 page links to:
 
 - `files/stage/rapport_stage_1_vincent_daher.docx`;
 - `files/stage/rapport_stage_2_vincent_daher.docx`;
 - `files/stage/rapport_stage_3_vincent_daher.docx`;
 - `files/stage/rapport_stage_4_vincent_daher.docx`.
 
-For the Master 2 thesis:
-
-1. Put the thesis file in `files/thesis/`.
-2. Update the thesis link in `about.html`.
-
 The current thesis link uses:
 
 - `files/thesis/these_vincent (1).pdf`.
 
-The current CV link uses:
+The current course viewers use:
 
-- `files/cv/CV_Vincent_Daher.pdf`.
-
-For imported HTML projects:
-
-1. Create a folder inside `projects/`.
-2. Place the project files there.
-3. Link to the project from `projects.html`.
-
-The current Projects page highlights:
-
-- interactive mathematics visualizers in `projects/math-visualizers/`;
-- university presentations in `projects/university-projects/`;
-- visual artefacts from the university project folder.
-
-For the university logo:
-
-1. Save the real logo image in `assets/images/`.
-2. The current logo file is `assets/images/Logo-FacultyofPedagogy.jpg`.
-3. If the file name changes, update the image path in `index.html`, `about.html`, and `stage.html`.
-
-For the profile photo:
-
-1. Save the image in `assets/images/`.
-2. The current image is `assets/images/me.png`.
-3. It will appear beside the heading on `about.html`.
-
-For the home page mathematics background:
-
-1. Save the image in `assets/images/`.
-2. Name it `math_bg.jpg`, `math_bg.png`, or `math_bg.webp`.
-3. The home hero background will use it automatically.
-
-For the Alphaducation logo:
-
-1. Save the logo in `assets/images/`.
-2. The current logo file is `assets/images/alphalogo.png`.
-3. It appears on `alphaducation.html`.
+- `files/courses/coure_eb6.pdf`;
+- `files/courses/cours_eb7.pdf`.
 
 ## Academic Context
 
@@ -139,9 +77,11 @@ The website includes these main pages:
 
 - Navigation page;
 - Teacher Profile;
+- CV;
 - School & Courses;
-- Stage Portfolio;
+- Practicum;
 - Projects;
+- My Achievements;
 - Alphaducation.
 
 The portfolio is designed to connect evidence, reflection, competency, and professional growth.
