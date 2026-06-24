@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Academic achievements, certificates, and thesis work by Vincent Daher." />
+    <meta name="description" content="Academic achievements and thesis work by Vincent Daher." />
     <title>My Achievements | Vincent Daher</title>
     <link rel="stylesheet" href="styles.css?v=7" />
   </head>
@@ -11,12 +11,14 @@
     <nav class="navbar" aria-label="Main navigation">
       <a class="navbar__brand" href="index.html"><img class="navbar__logo" src="assets/images/Logo-FacultyofPedagogy.jpg" alt="Lebanese University Faculty of Pedagogy logo" /><strong>Vincent Daher</strong></a>
       <button class="navbar__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
-      <div class="navbar__links">
+            <div class="navbar__links">
         <a href="index.html">Home</a>
         <a href="about.html">Teacher Profile</a>
         <a href="cv.html">CV</a>
         <a href="school.html">School & Courses</a>
-        <a href="practicum.html">Practicum</a>
+        <a class="nav-practicum nav-practicum--start" href="practicum-1.html">Practicum 1</a>
+        <a class="nav-practicum" href="practicum-2.html">Practicum 2</a>
+        <a class="nav-practicum nav-practicum--end" href="practicum-3.html">Practicum 3</a>
         <a href="projects.html">Projects</a>
         <a href="achievements.html" aria-current="page">Achievements</a>
         <a href="alphaducation.html">Alphaducation</a>
@@ -27,15 +29,15 @@
       <header class="page-hero">
         <div class="container">
           <p class="eyebrow">My achievements</p>
-          <h1>Academic achievements, certificates, and thesis work</h1>
+          <h1>Academic achievements and thesis work</h1>
         </div>
       </header>
 
       <section class="section">
         <div class="container section__split">
           <div class="section-title">
-            <p class="eyebrow">Academic achievements</p>
-            <h2>Master 2 in Fundamental Mathematics and TOT certificate</h2>
+            <p class="eyebrow">Academic achievement</p>
+            <h2>Master 2 in Fundamental Mathematics</h2>
             <p>
               My mathematical formation includes a Master 2 in Fundamental Mathematics,
               which strengthens my theoretical background and supports my work as a mathematics teacher.
@@ -43,17 +45,6 @@
           </div>
 
           <div class="profile-grid">
-            <article class="card certificate-card">
-              <span class="tag">Certificate</span>
-              <h3>TOT certificate</h3>
-              <p>
-                Training of Trainers certificate documenting professional development in training,
-                communication, and educational support.
-              </p>
-              <div class="certificate-frame" aria-label="TOT certificate image">
-                <img src="assets/images/tot_certificate.jpeg" alt="TOT certificate for Vincent Daher" onerror="this.closest('.certificate-frame').classList.add('is-missing'); this.remove();" />
-              </div>
-            </article>
             <article class="card">
               <span class="tag">Thesis</span>
               <h3>Master 2 thesis</h3>

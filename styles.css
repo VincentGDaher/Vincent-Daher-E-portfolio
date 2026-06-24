@@ -103,6 +103,23 @@ button {
   font-weight: 700;
 }
 
+
+.navbar__links a.nav-practicum {
+  color: var(--navy);
+  background: var(--teal-soft);
+}
+
+.navbar__links a.nav-practicum--start {
+  margin-left: 8px;
+  box-shadow: -8px 0 0 -7px var(--gray-200);
+}
+
+.navbar__links a.nav-practicum:hover,
+.navbar__links a.nav-practicum:focus-visible,
+.navbar__links a.nav-practicum[aria-current="page"] {
+  color: var(--white);
+  background: var(--teal);
+}
 .navbar__links a:hover,
 .navbar__links a:focus-visible {
   color: var(--navy);

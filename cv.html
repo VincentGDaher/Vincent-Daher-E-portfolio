@@ -3,20 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Curriculum vitae for Vincent Daher." />
+    <meta name="description" content="Curriculum vitae and training certificate for Vincent Daher." />
     <title>CV | Vincent Daher</title>
-    <link rel="stylesheet" href="styles.css?v=6" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <nav class="navbar" aria-label="Main navigation">
       <a class="navbar__brand" href="index.html"><img class="navbar__logo" src="assets/images/Logo-FacultyofPedagogy.jpg" alt="Lebanese University Faculty of Pedagogy logo" /><strong>Vincent Daher</strong></a>
       <button class="navbar__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
-      <div class="navbar__links">
+            <div class="navbar__links">
         <a href="index.html">Home</a>
         <a href="about.html">Teacher Profile</a>
         <a href="cv.html" aria-current="page">CV</a>
         <a href="school.html">School & Courses</a>
-        <a href="practicum.html">Practicum</a>
+        <a class="nav-practicum nav-practicum--start" href="practicum-1.html">Practicum 1</a>
+        <a class="nav-practicum" href="practicum-2.html">Practicum 2</a>
+        <a class="nav-practicum nav-practicum--end" href="practicum-3.html">Practicum 3</a>
         <a href="projects.html">Projects</a>
         <a href="achievements.html">Achievements</a>
         <a href="alphaducation.html">Alphaducation</a>
@@ -28,7 +30,7 @@
         <div class="container page-hero__inner">
           <div class="page-hero__text">
             <p class="eyebrow">Curriculum vitae</p>
-            <h1>CV</h1>
+            <h1>CV and professional certificate</h1>
           </div>
           <div class="profile-photo" aria-label="Vincent Daher profile photo">
             <img src="assets/images/me.png" alt="Vincent Daher" />
@@ -65,17 +67,23 @@
             <article class="card">
               <span class="tag">Teaching</span>
               <h3>Current teaching context</h3>
-              <p>
-                Mathematics teacher at Notre Dame des Apotres School for Grade 6 and Grade 7 classes.
-              </p>
+              <p>Mathematics teacher at Notre Dame des Apotres School for Grade 6 and Grade 7 classes.</p>
             </article>
             <article class="card">
               <span class="tag">University</span>
               <h3>Current program</h3>
+              <p>Master 1 in Mathematical Education at the Lebanese University, Faculty of Pedagogy - Deanery.</p>
+            </article>
+            <article class="card certificate-card">
+              <span class="tag">Certificate</span>
+              <h3>TOT certificate</h3>
               <p>
-                Master 1 in Mathematical Education at the Lebanese University,
-                Faculty of Pedagogy - Deanery.
+                Training of Trainers certificate documenting professional development in training,
+                communication, and educational support.
               </p>
+              <div class="certificate-frame" aria-label="TOT certificate image">
+                <img src="assets/images/tot_certificate.jpeg" alt="TOT certificate for Vincent Daher" onerror="this.closest('.certificate-frame').classList.add('is-missing'); this.remove();" />
+              </div>
             </article>
           </div>
         </div>

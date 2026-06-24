@@ -8,9 +8,9 @@ This is a classical static multi-page website for Vincent Daher. It does not nee
 - `about.html` introduces Vincent as a mathematics teacher and reflective practitioner.
 - `cv.html` contains the dedicated CV section.
 - `school.html` presents the school context, courses, and current educational projects.
-- `practicum.html` contains Practicum 1, Practicum 2, and Practicum 3.
+- `practicum-1.html`, `practicum-2.html`, and `practicum-3.html` contain the three practicum sections.
 - `projects.html` links to imported mathematics HTML visualizers and university projects.
-- `achievements.html` presents academic achievements, including the Master 2 thesis.
+- `achievements.html` presents academic achievements, including the Master 2 thesis.`r`n- `assets/images/tot_certificate.jpeg` is displayed on the CV page.
 - `alphaducation.html` presents Alphaducation, current work, website, Instagram, workshops, and tutoring.
 - `styles.css` contains the visual design and responsive layout.
 - `script.js` contains the small mobile navigation interaction.
@@ -79,7 +79,7 @@ The website includes these main pages:
 - Teacher Profile;
 - CV;
 - School & Courses;
-- Practicum;
+- Practicum 1;`r`n- Practicum 2;`r`n- Practicum 3;
 - Projects;
 - My Achievements;
 - Alphaducation.
